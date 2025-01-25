@@ -10,10 +10,12 @@
 		4F15AA1F2D43D5020052F59F /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 4F15AA1E2D43D5020052F59F /* Alamofire */; };
 		4F15AA222D43D50C0052F59F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4F15AA212D43D50C0052F59F /* SnapKit */; };
 		4F15AA252D43D5180052F59F /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 4F15AA242D43D5180052F59F /* Kingfisher */; };
+		4F15AA6F2D43DFA50052F59F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4F15AA6E2D43DFA50052F59F /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4F15AA052D43D4240052F59F /* MyMDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F15AA6E2D43DFA50052F59F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,6 +56,7 @@
 		4F15A9FC2D43D4240052F59F = {
 			isa = PBXGroup;
 			children = (
+				4F15AA6E2D43DFA50052F59F /* .gitignore */,
 				4F15AA072D43D4240052F59F /* MyMDB */,
 				4F15AA062D43D4240052F59F /* Products */,
 			);
@@ -139,6 +142,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F15AA6F2D43DFA50052F59F /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
