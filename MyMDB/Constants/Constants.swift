@@ -20,7 +20,11 @@ public struct Constants {
     static let unselectedBorderWidth: CGFloat = 1
     static let selectedBorderWidth: CGFloat = 3
     static let unselectedAlpha: CGFloat = 0.5
+    static let selectedAlpha: CGFloat = 1
     static let cornerRadius: CGFloat = 20
+    static let profileImageCount = 12
+    
+    static let range = 0...11
     
     static let tabbarImages = ["popcorn", "film.stack", "person.circle"]
     static let tabbarTitles = ["CINEMA", "UPCOMING", "PROFILE"]
@@ -35,6 +39,9 @@ public struct Constants {
     static let filmFill = "film.fill"
     static let forward = "chevron.forward"
     static let backward = "chevron.backward"
+    static let dismissKeyboardImage = "keyboard.chevron.compact.down"
+    static let profileImagePrefix = "profile_"
+    static let randomProfileImage = "\(profileImagePrefix)\(Int.random(in: range))"
     
     static let setProfileTitle = "프로필 설정"
     static let setProfileImageTitle = "프로필 이미지 설정"
@@ -43,14 +50,30 @@ public struct Constants {
     static let todayMovieTitle = "오늘의 영화"
     static let searchMovieTitle = "영화 검색"
     static let settingTitle = "설정"
-    
-    static let first = "first"
+    static let save = "저장"
     static let okActionTitle = "확인"
+
+    static let done = "Done"
     static let appName = "MyMovieDB"
-    
     static let onboarding = "Onboarding"
+    
     static let description = "당신만의 영화 세상,\n\(appName)를 시작해보세요."
     static let start = "시작하기"
     static let completion = "완료"
     static let savedMovieCountSuffix = " 개의 무비박스 보관중"
+    static let nicknamePlaceholder = "닉네임을 입력해 주세요"
+    
+    static let validNickname = "사용할 수 있는 닉네임이에요"
+    static let invalidLength = "2글자 이상 10글자 미만으로 설정해 주세요"
+    static let invalidCharacter = "닉네임에 @, #, $, % 는 포함할 수 없어요"
+    static let invalidNumber = "닉네임에 숫자는 포함할 수 없어요"
+    static let invalidCharacterSet = "@#$%"
+    static let newline = "\n"
+    
+    static let firstKey = "first"
+    static let profileImageKey = "profileImage"
+    static let nickNameKey = "nickName"
+    static let movieCountKey = "movieCount"
+    static let searchHistoryKey = "searchHistory"
+    static let dateKey = "date"
 }

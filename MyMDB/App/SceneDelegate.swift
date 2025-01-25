@@ -11,7 +11,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    let isNotFirst = UserDefaults.standard.bool(forKey: C.first)
+    let isNotFirst = UserDefaults.standard.bool(forKey: C.firstKey)
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        let rootVC = isNotFirst ? TabbarController() : OnboardingViewController()
+        let rootVC = isNotFirst ? TabBarController() : OnboardingViewController()
 
         window = UIWindow(windowScene: scene)
         window?.rootViewController = UINavigationController(rootViewController: rootVC)

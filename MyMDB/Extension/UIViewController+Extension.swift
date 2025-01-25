@@ -1,8 +1,8 @@
 //
 //  UIViewController+Extension.swift
-//  SeSACDay22Assignment
+//  MyMDB
 //
-//  Created by ilim on 2025-01-23.
+//  Created by ilim on 2025-01-25.
 //
 
 import UIKit
@@ -14,18 +14,92 @@ extension UIViewController {
             let window = windowScene.windows.first
         else { return }
 
-        let isNotFirst = UserDefaults.standard.bool(forKey: C.first)
-        let rootVC = isNotFirst ? OnboardingViewController() : ProfileViewController()
+        let isNotFirst = UserDefaults.standard.bool(forKey: C.firstKey)
+        let rootVC = isNotFirst ? OnboardingViewController() : TabBarController()
         
-        UserDefaults.standard.set(!isNotFirst, forKey: C.first)
+        UserDefaults.standard.set(!isNotFirst, forKey: C.firstKey)
         
         window.rootViewController = UINavigationController(rootViewController: rootVC)
         window.makeKeyAndVisible()
+    }
+    
+    func flowLayout(_ count: CGFloat) -> UICollectionViewFlowLayout {
+        let layout = UICollectionViewFlowLayout()
+        let numberOfItemsInLine: CGFloat = count
+        let inset: CGFloat = 5
+        let screenWidth = UIScreen.main.bounds.width
+        let itemWidth = (screenWidth - (numberOfItemsInLine + 1) * inset) / numberOfItemsInLine
+        
+        layout.scrollDirection = .vertical
+        layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
+        layout.minimumLineSpacing = inset
+        layout.minimumInteritemSpacing = inset
+        layout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        
+        return layout
     }
     
     func presentAlert(message: String?) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: Constants.okActionTitle, style: .default))
         present(alert, animated: true)
+    }
+    
+    func configureNavigationBar(_ vc: UIViewController, _ title: String) {
+        let backBarButtonItem = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(back))
+        let image = UIImage(systemName: Constants.backward)
+        
+        backBarButtonItem.tintColor = .customTheme
+        backBarButtonItem.image = image
+        
+        vc.navigationItem.leftBarButtonItem = backBarButtonItem
+        vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
+        vc.title = title
+    }
+    
+    func configureRightBarButtonItem(_ vc: UIViewController ,_ title: String? = nil, _ image: String? = nil) {
+        let barButtonItem = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(rightBarButtonTapped))
+        
+        barButtonItem.tintColor = .customTheme
+        
+        if let image {
+            let buttonImage = UIImage(systemName: image)
+            barButtonItem.image = buttonImage
+        }
+
+        vc.navigationItem.rightBarButtonItem = barButtonItem
+    }
+    
+    func configureToolbar(_ sender: UITextField) {
+        let toolbar = UIToolbar()
+        let nilButton = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let doneButton = UIBarButtonItem(title: nil, style: .done, target: self, action: #selector(dismissKeyboard))
+        
+        doneButton.image = UIImage(systemName: C.dismissKeyboardImage)
+        
+        toolbar.items = [nilButton, doneButton]
+        toolbar.backgroundColor = .customWhite
+        toolbar.tintColor = .customBlack
+        toolbar.sizeToFit()
+        
+        sender.inputAccessoryView = toolbar
+    }
+        
+    @objc
+    func back() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    func dismissVC() {
+        dismiss(animated: true)
+    }
+    
+    @objc
+    func rightBarButtonTapped() { }
+    
+    @objc
+    private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

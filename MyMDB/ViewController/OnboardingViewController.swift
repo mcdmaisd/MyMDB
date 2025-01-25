@@ -67,10 +67,5 @@ final class OnboardingViewController: BaseViewController {
     private func startButtonTapped() {
         navigationController?.pushViewController(SetProfileViewController(), animated: true)
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
 }
 
