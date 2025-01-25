@@ -169,6 +169,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyMDB/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "임익화";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
@@ -202,6 +203,7 @@
 				DEVELOPMENT_TEAM = B3PWYBKFUK;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyMDB/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "임익화";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
