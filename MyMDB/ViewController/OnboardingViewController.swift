@@ -53,7 +53,7 @@ final class OnboardingViewController: BaseViewController {
         titleLabel.text = C.onboarding
         titleLabel.textColor = .customWhite
         titleLabel.textAlignment = .center
-        titleLabel.font = .italicSystemFont(ofSize: C.sizeXl)
+        titleLabel.font = .italicSystemFont(ofSize: 30)
         
         descriptionLabel.numberOfLines = 2
         descriptionLabel.text = C.description

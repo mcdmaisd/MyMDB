@@ -7,7 +7,21 @@
 
 import UIKit
 
-class MainViewController: BaseViewController {
+final class MainViewController: BaseViewController {
+    private let infoView = UserInfoView()
+    
+    override func configureHierarchy() {
+        addSubView(infoView)
+    }
+    
+    override func configureLayout() {
+        infoView.setInfoConstraint(self)
+    }
+    
+    override func configureView() {
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar(self, C.todayMovieTitle)

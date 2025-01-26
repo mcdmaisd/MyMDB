@@ -21,7 +21,7 @@ final class SetProfileImageViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        profileView.setConstraint(self)
+        profileView.setProfileConstraint(self)
         
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(profileView.snp.bottom).offset(20)

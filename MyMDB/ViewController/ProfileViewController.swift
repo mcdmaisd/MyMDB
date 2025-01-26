@@ -7,17 +7,23 @@
 
 import UIKit
 
-class ProfileViewController: BaseViewController {
+final class ProfileViewController: BaseViewController {
     
+    private let infoView = UserInfoView()
     private let tableView = UITableView()
     
     override func configureHierarchy() {
+        addSubView(infoView)
         addSubView(tableView)
     }
     
     override func configureLayout() {
+        infoView.setInfoConstraint(self)
+        
         tableView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide).inset(20)
+            make.top.equalTo(infoView.snp.bottom).offset(10)
+            make.horizontalEdges.equalTo(infoView)
+            make.bottom.equalToSuperview()
         }
     }
     

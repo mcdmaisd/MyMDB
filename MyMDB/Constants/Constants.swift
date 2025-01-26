@@ -82,5 +82,10 @@ public struct Constants {
     static let alertMessage = "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?"
     static let okActionTitle = "확인"
     static let cancelActionTitle = "취소"
+    
+    static let dateStringFormat = "yy.MM.dd '가입'"
+    static let locale = "ko_KR"
+    static let failure = "Fail"
+
 
 }

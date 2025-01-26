@@ -52,7 +52,7 @@ extension UIViewController {
     
     func configureNavigationBar(_ vc: UIViewController, _ title: String) {
         vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
-        vc.title = title
+        vc.navigationItem.title = title
     }
     
     func configureLeftBarButtonItem(_ vc: UIViewController) {
@@ -99,7 +99,6 @@ extension UIViewController {
         }
     }
 
-        
     @objc
     func back() {
         navigationController?.popViewController(animated: true)

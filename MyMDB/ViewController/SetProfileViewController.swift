@@ -32,7 +32,7 @@ final class SetProfileViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        profileView.setConstraint(self)
+        profileView.setProfileConstraint(self)
         
         nicknameTextField.snp.makeConstraints { make in
             make.top.equalTo(profileView.snp.bottom).offset(20)
@@ -123,13 +123,15 @@ final class SetProfileViewController: BaseViewController {
                 result ? C.validNickname: nil
             ]
         }
-
+        
+        statusLabel.textColor = result ? .customTheme : .systemPink
         statusLabel.text = errorMessage.compactMap { $0 }.joined(separator: C.newline)
     }
     
     private func save() {
         U.shared.set(profileView.getImageName(), C.profileImageKey)
         U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
+        U.shared.set(Date().dateToString(), C.dateKey)
     }
     
     @objc
