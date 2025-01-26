@@ -10,10 +10,13 @@ import UIKit
 class MainViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureNavigationBar(self, C.todayMovieTitle)
+        configureRightBarButtonItem(self, nil, C.searchImage)
     }
     
-
+    override func rightBarButtonTapped() {
+        print(#function)
+    }
 
 
 }

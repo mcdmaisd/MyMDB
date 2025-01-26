@@ -32,6 +32,7 @@ final class SetProfileImageViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar(self, C.setProfileImageTitle)
+        configureLeftBarButtonItem(self)
         initCollectionView()
     }
 

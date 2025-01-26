@@ -86,6 +86,7 @@ final class SetProfileViewController: BaseViewController {
         let title = isEdit ? C.editProfileTitle : C.setProfileTitle
         
         configureNavigationBar(self, title)
+        configureLeftBarButtonItem(self)
         configureToolbar(nicknameTextField)
         configureData()
         verifyNickname(nicknameTextField)

@@ -15,11 +15,12 @@ extension UIViewController {
         else { return }
 
         let isNotFirst = UserDefaults.standard.bool(forKey: C.firstKey)
-        let rootVC = isNotFirst ? OnboardingViewController() : TabBarController()
+        let onBoarding = UINavigationController(rootViewController: OnboardingViewController())
+        let vc = isNotFirst ? onBoarding : TabBarController()
         
         UserDefaults.standard.set(!isNotFirst, forKey: C.firstKey)
         
-        window.rootViewController = UINavigationController(rootViewController: rootVC)
+        window.rootViewController = vc
         window.makeKeyAndVisible()
     }
     
@@ -46,15 +47,18 @@ extension UIViewController {
     }
     
     func configureNavigationBar(_ vc: UIViewController, _ title: String) {
+        vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
+        vc.title = title
+    }
+    
+    func configureLeftBarButtonItem(_ vc: UIViewController) {
         let backBarButtonItem = UIBarButtonItem(title: nil, style: .plain, target: self, action: #selector(back))
         let image = UIImage(systemName: Constants.backward)
         
         backBarButtonItem.tintColor = .customTheme
         backBarButtonItem.image = image
-        
+
         vc.navigationItem.leftBarButtonItem = backBarButtonItem
-        vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
-        vc.title = title
     }
     
     func configureRightBarButtonItem(_ vc: UIViewController ,_ title: String? = nil, _ image: String? = nil) {

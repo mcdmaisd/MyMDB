@@ -27,6 +27,6 @@ final class TabBarController: UITabBarController {
             )
         }
 
-        viewControllers = tabs
+        viewControllers = tabs.map { UINavigationController(rootViewController: $0) }
     }
 }
