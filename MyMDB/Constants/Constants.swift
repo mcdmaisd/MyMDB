@@ -21,10 +21,13 @@ public struct Constants {
     static let unselectedAlpha: CGFloat = 0.5
     static let selectedAlpha: CGFloat = 1
     static let cornerRadius: CGFloat = 20
+    static let tableViewCellHeight: CGFloat = 40
+
     static let profileImageCount = 12
     
     static let range = 0...11
     
+    static let settingTitles = ["자주 묻는 질문", "1:1 문의", "알림 설정", "탈퇴하기"]
     static let tabbarImages = ["popcorn", "film.stack", "person.circle"]
     static let tabbarTitles = ["CINEMA", "UPCOMING", "PROFILE"]
     
@@ -50,7 +53,6 @@ public struct Constants {
     static let searchMovieTitle = "영화 검색"
     static let settingTitle = "설정"
     static let save = "저장"
-    static let okActionTitle = "확인"
 
     static let done = "Done"
     static let appName = "MyMovieDB"
@@ -75,4 +77,10 @@ public struct Constants {
     static let movieCountKey = "movieCount"
     static let searchHistoryKey = "searchHistory"
     static let dateKey = "date"
+    
+    static let alertTitle = "탈퇴하기"
+    static let alertMessage = "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?"
+    static let okActionTitle = "확인"
+    static let cancelActionTitle = "취소"
+
 }

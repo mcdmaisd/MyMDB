@@ -40,9 +40,13 @@ extension UIViewController {
         return layout
     }
     
-    func presentAlert(message: String?) {
-        let alert = UIAlertController(title: nil, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: Constants.okActionTitle, style: .default))
+    func presentAlert(_ title: String, _ message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: C.cancelActionTitle, style: .cancel))
+        alert.addAction(UIAlertAction(title: C.okActionTitle, style: .default, handler: { action in
+            self.changeRootView()
+            self.removeAllUserDefaults()
+        }))
         present(alert, animated: true)
     }
     
@@ -88,6 +92,13 @@ extension UIViewController {
         
         sender.inputAccessoryView = toolbar
     }
+    
+    func removeAllUserDefaults() {
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key.description)
+        }
+    }
+
         
     @objc
     func back() {
