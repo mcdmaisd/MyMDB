@@ -8,11 +8,12 @@
 import UIKit
 
 final class OnboardingViewController: BaseViewController {
-    
     private let onboardingImageView = UIImageView()
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let startButton = CustomButton(title: C.start)
+    
+    private var isTouched = false
     
     override func configureHierarchy() {
         addSubView(onboardingImageView)
@@ -63,8 +64,16 @@ final class OnboardingViewController: BaseViewController {
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isTouched = false
+    }
+    
     @objc
     private func startButtonTapped() {
+        if isTouched { return }
+        
+        isTouched.toggle()
         navigationController?.pushViewController(SetProfileViewController(), animated: true)
     }
 }

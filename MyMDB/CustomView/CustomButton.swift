@@ -8,7 +8,6 @@
 import UIKit
 
 final class CustomButton: UIButton {
-    
     private let title: String
     
     init(title: String) {

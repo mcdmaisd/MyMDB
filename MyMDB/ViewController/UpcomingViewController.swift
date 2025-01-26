@@ -8,7 +8,6 @@
 import UIKit
 
 class UpcomingViewController: BaseViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

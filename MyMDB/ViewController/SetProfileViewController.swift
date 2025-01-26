@@ -7,25 +7,24 @@
 
 import UIKit
 
-class SetProfileViewController: BaseViewController {
-    
-    private let profileImageView = UIImageView()
-    private let outlineView = UIView()
-    private let cameraBadgeImageView = UIImageView()
+final class SetProfileViewController: BaseViewController {
     private let nicknameTextField = UITextField()
     private let underlineView = UIView()
     private let statusLabel = UILabel()
     private let registerButton = CustomButton(title: C.completion)
     private let isEdit = U.shared.get(C.firstKey) as? Bool ?? false
+    private let imageName = U.shared.get(C.profileImageKey) as? String ?? C.randomProfileImage
+    
+    private var hasInvalidLength = false
+    private var hasInvalidCharacter = false
+    private var hasNumber = false
+    private var result = false
 
-    private var profileImageName = U.shared.get(C.profileImageKey) as? String ?? C.randomProfileImage
-
+    private lazy var profileView = ProfileContainerView(name: imageName)
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
     
     override func configureHierarchy() {
-        addSubView(profileImageView)
-        addSubView(outlineView)
-        outlineView.addSubview(cameraBadgeImageView)
+        addSubView(profileView)
         addSubView(nicknameTextField)
         addSubView(underlineView)
         addSubView(statusLabel)
@@ -33,25 +32,10 @@ class SetProfileViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        profileImageView.snp.makeConstraints { make in
-            make.width.equalTo(view.safeAreaLayoutGuide).dividedBy(4)
-            make.height.equalTo(profileImageView.snp.width)
-            make.centerX.equalToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-        }
-        
-        outlineView.snp.makeConstraints { make in
-            make.width.equalTo(profileImageView.snp.width).dividedBy(3)
-            make.height.equalTo(outlineView.snp.width)
-            make.trailing.bottom.equalTo(profileImageView)
-        }
-        
-        cameraBadgeImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(5)
-        }
+        profileView.setConstraint(self)
         
         nicknameTextField.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(20)
+            make.top.equalTo(profileView.snp.bottom).offset(20)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
         
@@ -73,19 +57,8 @@ class SetProfileViewController: BaseViewController {
     }
     
     override func configureView() {
-        profileImageView.contentMode = .scaleAspectFill
-        profileImageView.layer.masksToBounds = true
-        profileImageView.layer.borderWidth = C.selectedBorderWidth
-        profileImageView.layer.borderColor = UIColor.customTheme.cgColor
-        profileImageView.isUserInteractionEnabled = true
-        profileImageView.addGestureRecognizer(tapGestureRecognizer)
-        
-        outlineView.clipsToBounds = true
-        outlineView.backgroundColor = .customTheme
-        outlineView.tintColor = .customWhite
-        
-        cameraBadgeImageView.contentMode = .scaleAspectFill
-        cameraBadgeImageView.image = UIImage(systemName: C.camera)
+        profileView.isUserInteractionEnabled = true
+        profileView.addGestureRecognizer(tapGestureRecognizer)
         
         nicknameTextField.font = .systemFont(ofSize: C.sizeLg)
         nicknameTextField.textColor = .customWhite
@@ -103,13 +76,7 @@ class SetProfileViewController: BaseViewController {
         registerButton.isHidden = true
         registerButton.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
-        outlineView.layer.cornerRadius = outlineView.frame.width / 2
-    }
-    
+        
     override func rightBarButtonTapped() {
         save()
     }
@@ -132,31 +99,18 @@ class SetProfileViewController: BaseViewController {
         
     private func configureData() {
         let nickName = U.shared.get(C.nickNameKey) as? String ?? ""
-        
-        profileImageView.image = UIImage(named: profileImageName)
         nicknameTextField.text = nickName
     }
     
-    @objc
-    private func verifyNickname(_ sender: UITextField) {
-        guard let text = sender.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-        nicknameTextField.text = text
-        if text.isEmpty {
-            statusLabel.text?.removeAll()
-            return
-        }
-        
-        let hasInvalidLength = text.count < 2 || text.count >= 10
-        let hasInvalidCharacter = !text.filter(C.invalidCharacterSet.contains).isEmpty
-        let hasNumber = !text.filter { $0.isNumber }.isEmpty
-        let result = !hasInvalidLength && !hasInvalidCharacter && !hasNumber
-        
+    private func hideButton() {
         if isEdit {
             navigationItem.rightBarButtonItem?.isHidden = !result
         } else {
             registerButton.isHidden = !result
         }
-        
+    }
+    
+    private func setStatusMessage() {
         var errorMessage: [String?] = []
         
         if hasInvalidLength {
@@ -168,13 +122,31 @@ class SetProfileViewController: BaseViewController {
                 result ? C.validNickname: nil
             ]
         }
-        
+
         statusLabel.text = errorMessage.compactMap { $0 }.joined(separator: C.newline)
     }
     
     private func save() {
-        U.shared.set(profileImageName, C.profileImageKey)
+        U.shared.set(profileView.getImageName(), C.profileImageKey)
         U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
+    }
+    
+    @objc
+    private func verifyNickname(_ sender: UITextField) {
+        guard let text = sender.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+        nicknameTextField.text = text
+        if text.isEmpty {
+            statusLabel.text?.removeAll()
+            return
+        }
+        
+        hasInvalidLength = text.count < 2 || text.count >= 10
+        hasInvalidCharacter = !text.filter(C.invalidCharacterSet.contains).isEmpty
+        hasNumber = !text.filter { $0.isNumber }.isEmpty
+        result = !hasInvalidLength && !hasInvalidCharacter && !hasNumber
+
+        hideButton()
+        setStatusMessage()
     }
     
     @objc
@@ -187,15 +159,12 @@ class SetProfileViewController: BaseViewController {
     private func imageTapped() {
         let vc = SetProfileImageViewController()
         
-        vc.image = profileImageName
-        
+        vc.image = profileView.getImageName()
         vc.contents = { data in
-            self.profileImageName = data
-            self.profileImageView.image = UIImage(named: data)
+            self.profileView.configureData(data)
         }
         
         navigationController?.pushViewController(vc, animated: true)
     }
-
 }
 

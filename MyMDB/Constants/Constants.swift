@@ -8,7 +8,6 @@
 import Foundation
 
 public struct Constants {
-    
     private init() { }
     
     static let sizeXs: CGFloat = 12
