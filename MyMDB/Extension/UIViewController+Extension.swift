@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIViewController {
+extension UIViewController: SendTouchEvent {
     func changeRootView() {
         guard
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -97,6 +97,21 @@ extension UIViewController {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key.description)
         }
+    }
+    
+    func sheetPresent() {
+        let vc = UINavigationController(rootViewController: SetProfileViewController())
+        
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.largestUndimmedDetentIdentifier = .medium
+            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+            sheet.prefersGrabberVisible = true
+        }
+        
+        present(vc, animated: true, completion: nil)
     }
 
     @objc

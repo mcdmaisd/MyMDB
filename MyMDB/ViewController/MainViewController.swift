@@ -19,7 +19,7 @@ final class MainViewController: BaseViewController {
     }
     
     override func configureView() {
-        
+        infoView.delegate = self
     }
     
     override func viewDidLoad() {
@@ -27,10 +27,8 @@ final class MainViewController: BaseViewController {
         configureNavigationBar(self, C.todayMovieTitle)
         configureRightBarButtonItem(self, nil, C.searchImage)
     }
-    
+
     override func rightBarButtonTapped() {
         print(#function)
     }
-
-
 }

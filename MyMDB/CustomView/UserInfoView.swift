@@ -14,11 +14,16 @@ final class UserInfoView: BaseView {
     private let rightImage = UIImage(systemName: C.forward)
     private let myMovieButton = UIButton()
     
+    weak var delegate: SendTouchEvent?
+    
     override func configureHierarchy() {
         addView(outlineView)
         outlineView.addSubview(profileImageView)
         outlineView.addSubview(profileButton)
         outlineView.addSubview(myMovieButton)
+        NotificationCenter
+            .default
+            .addObserver(self, selector:#selector(receiveNotification), name: NSNotification.Name(C.userInfoChanged), object: nil)
     }
     
     override func configureLayout() {
@@ -76,7 +81,8 @@ final class UserInfoView: BaseView {
             title.font = UIFont.boldSystemFont(ofSize: C.sizeXl)
             return title
         }
-               
+        
+        profileButton.addTarget(self, action: #selector(profileButtonTapped), for: .touchUpInside)
         profileButton.contentHorizontalAlignment = .fill
         profileButton.configuration = config
         profileButton.tintColor = .customDarkGray
@@ -95,5 +101,15 @@ final class UserInfoView: BaseView {
         config.attributedTitle = AttributedString(title, attributes: container)
 
         myMovieButton.configuration = config
+    }
+    
+    @objc
+    private func profileButtonTapped() {
+        delegate?.sheetPresent()
+    }
+    
+    @objc
+    private func receiveNotification() {
+        configureView()
     }
 }

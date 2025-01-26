@@ -87,5 +87,6 @@ public struct Constants {
     static let locale = "ko_KR"
     static let failure = "Fail"
 
+    static let userInfoChanged = "changed"
 
 }
