@@ -56,10 +56,13 @@ final class UserInfoView: BaseView {
         outlineView.backgroundColor = .darkGray
         outlineView.layer.cornerRadius = C.cornerRadius
         
-        profileImageView.configureImage(U.shared.get(C.profileImageKey) as? String ?? "")
-        
-        configureProfileButton()
+        configureUpperView()
         configureMyMovieButton()
+    }
+    
+    private func configureUpperView() {
+        profileImageView.configureImage(U.shared.get(C.profileImageKey) as? String ?? "")
+        configureProfileButton()
     }
     
     private func configureProfileButton() {
@@ -89,8 +92,8 @@ final class UserInfoView: BaseView {
     }
     
     private func configureMyMovieButton() {
-        let count = U.shared.get(C.movieCountKey) as? Int ?? 0
-        let title = "\(count)\(C.savedMovieCountSuffix)"
+        let list = U.shared.get(C.movieCountKey) as? [Int] ?? []
+        let title = "\(list.count)\(C.savedMovieCountSuffix)"
         let container = AttributeContainer().font(.boldSystemFont(ofSize: C.sizeXl))
 
         var config = UIButton.Configuration.filled()
@@ -109,7 +112,8 @@ final class UserInfoView: BaseView {
     }
     
     @objc
-    private func receiveNotification() {
-        configureView()
+    private func receiveNotification(_ notification: NSNotification) {
+        guard let result = notification.userInfo?[C.userInfoKey] as? Bool else { return }
+        result ? configureUpperView() : configureMyMovieButton()
     }
 }

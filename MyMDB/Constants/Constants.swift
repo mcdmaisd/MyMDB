@@ -88,5 +88,5 @@ public struct Constants {
     static let failure = "Fail"
 
     static let userInfoChanged = "changed"
-
+    static let userInfoKey = "key"
 }

@@ -22,7 +22,6 @@ final class SetProfileViewController: BaseViewController {
 
     private lazy var profileView = ProfileContainerView(name: imageName)
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-
     
     override func configureHierarchy() {
         addSubView(profileView)
@@ -81,9 +80,7 @@ final class SetProfileViewController: BaseViewController {
     override func rightBarButtonTapped() {
         save()
         dismissVC()
-        NotificationCenter.default.post(
-            name: NSNotification.Name(C.userInfoChanged), object: nil, userInfo: nil
-        )
+        view.postNotification(true)
     }
 
     override func viewDidLoad() {
@@ -136,7 +133,9 @@ final class SetProfileViewController: BaseViewController {
     private func save() {
         U.shared.set(profileView.getImageName(), C.profileImageKey)
         U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
-        U.shared.set(Date().dateToString(), C.dateKey)
+        if !isEdit {
+            U.shared.set(Date().dateToString(), C.dateKey)
+        }
     }
     
     @objc
