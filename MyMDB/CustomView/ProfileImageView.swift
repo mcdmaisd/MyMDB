@@ -32,7 +32,8 @@ final class ProfileImageView: BaseView {
         layer.cornerRadius = frame.width / 2
     }
     
-    func configureImage(_ name: String) {
+    func configureImage(_ name: String?) {
+        guard let name else { return }
         profileImageView.image = UIImage(named: name)
     }
     

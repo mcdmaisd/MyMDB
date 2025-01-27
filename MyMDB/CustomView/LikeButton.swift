@@ -9,6 +9,7 @@ import UIKit
 
 final class LikeButton: BaseView {
     private let button = UIButton()
+    
     override func configureHierarchy() {
         addView(button)
     }
@@ -19,12 +20,15 @@ final class LikeButton: BaseView {
         }
     }
     
-    override func configureView() {
+    func configureButton(_ id: Int) {
+        let list = U.shared.get(C.movieCountKey, [Int]())
+        
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = .clear
         config.baseForegroundColor = .customTheme
         button.configuration = config
-        button.isSelected = false
+        button.tag = id
+        button.isSelected = list.contains(button.tag)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.configurationUpdateHandler = { btn in
             switch btn.state {
@@ -36,13 +40,9 @@ final class LikeButton: BaseView {
         }
     }
     
-    func configureButton(_ id: Int) {
-        button.tag = id
-    }
-    
     private func changeValue(_ button: UIButton) {
         let tag = button.tag
-        var list = U.shared.get(C.movieCountKey) as? [Int] ?? []
+        var list = U.shared.get(C.movieCountKey, [Int]())
         
         if button.isSelected {
             list.append(tag)

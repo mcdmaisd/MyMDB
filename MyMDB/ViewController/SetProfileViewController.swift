@@ -12,8 +12,8 @@ final class SetProfileViewController: BaseViewController {
     private let underlineView = UIView()
     private let statusLabel = UILabel()
     private let registerButton = CustomButton(title: C.completion)
-    private let isEdit = U.shared.get(C.firstKey) as? Bool ?? false
-    private let imageName = U.shared.get(C.profileImageKey) as? String ?? C.randomProfileImage
+    private let isEdit = U.shared.get(C.firstKey, false)
+    private let imageName = U.shared.get(C.profileImageKey, "")
     
     private var hasInvalidLength = false
     private var hasInvalidCharacter = false
@@ -101,8 +101,7 @@ final class SetProfileViewController: BaseViewController {
     }
         
     private func configureData() {
-        let nickName = U.shared.get(C.nickNameKey) as? String ?? ""
-        nicknameTextField.text = nickName
+        nicknameTextField.text = U.shared.get(C.nickNameKey, nil)
     }
     
     private func hideButton() {

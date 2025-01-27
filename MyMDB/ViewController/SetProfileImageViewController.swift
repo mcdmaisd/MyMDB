@@ -31,7 +31,7 @@ final class SetProfileImageViewController: BaseViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        let isEdit = U.shared.get(C.firstKey) as? Bool ?? false
+        let isEdit = U.shared.get(C.firstKey, false)
         let title = isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
         configureNavigationBar(self, title)
         configureLeftBarButtonItem(self)

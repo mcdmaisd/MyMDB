@@ -7,7 +7,7 @@
 
 import Foundation
 
-final public class UserDefaultsManager {//제네릭 이용해서 type casting 처리 할것
+final public class UserDefaultsManager {
     static let shared = UserDefaultsManager()
     
     private let defaults = UserDefaults.standard
@@ -18,8 +18,8 @@ final public class UserDefaultsManager {//제네릭 이용해서 type casting �
         defaults.setValue(value, forKey: key)
     }
     
-    func get(_ key: String) -> Any? {
-        defaults.object(forKey: key)
+    func get<T>(_ key: String, _ defaultValue: T) -> T {
+        defaults.object(forKey: key) as? T ?? defaultValue
     }
     
 }

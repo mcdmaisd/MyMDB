@@ -61,13 +61,13 @@ final class UserInfoView: BaseView {
     }
     
     private func configureUpperView() {
-        profileImageView.configureImage(U.shared.get(C.profileImageKey) as? String ?? "")
+        profileImageView.configureImage(U.shared.get(C.profileImageKey, nil))
         configureProfileButton()
     }
     
     private func configureProfileButton() {
-        let title = U.shared.get(C.nickNameKey) as? String ?? ""
-        let subtitle = U.shared.get(C.dateKey) as? String ?? ""
+        let title = U.shared.get(C.nickNameKey, "")
+        let subtitle = U.shared.get(C.dateKey, "")
         
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
@@ -92,7 +92,7 @@ final class UserInfoView: BaseView {
     }
     
     private func configureMyMovieButton() {
-        let list = U.shared.get(C.movieCountKey) as? [Int] ?? []
+        let list = U.shared.get(C.movieCountKey, [Int]())
         let title = "\(list.count)\(C.savedMovieCountSuffix)"
         let container = AttributeContainer().font(.boldSystemFont(ofSize: C.sizeXl))
 
