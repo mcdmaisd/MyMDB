@@ -29,6 +29,6 @@ final class MainViewController: BaseViewController {
     }
 
     override func rightBarButtonTapped() {
-        print(#function)
+        
     }
 }

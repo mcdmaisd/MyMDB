@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 final class ProfileContainerView: BaseView {
     private let profileImageView = ProfileImageView()

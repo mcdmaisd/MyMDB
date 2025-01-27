@@ -104,10 +104,6 @@ extension UIViewController: SendTouchEvent {
         
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
-            sheet.largestUndimmedDetentIdentifier = .medium
-            sheet.prefersScrollingExpandsWhenScrolledToEdge = false
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
             sheet.prefersGrabberVisible = true
         }
         
