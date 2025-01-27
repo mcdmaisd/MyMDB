@@ -35,4 +35,13 @@ final class ProfileImageView: BaseView {
     func configureImage(_ name: String) {
         profileImageView.image = UIImage(named: name)
     }
+    
+    func configureImageByUrl(_ name: String) {
+        layer.borderColor = nil
+        layer.borderWidth = .zero
+        
+        let url = URL(string: name)
+        
+        profileImageView.kf.setImage(with: url)
+    }
 }
