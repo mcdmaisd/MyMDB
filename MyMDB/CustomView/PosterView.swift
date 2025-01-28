@@ -21,13 +21,17 @@ final class PosterView: BaseView {
     }
     
     override func configureView() {
-        clipsToBounds = true
-        layer.cornerRadius = C.cornerRadius
-        
+        posterImageView.layer.masksToBounds = true
+        posterImageView.layer.cornerRadius = C.cornerRadius
         posterImageView.contentMode = .scaleAspectFill
     }
-    
-    func configureImageView(_ name: String) {
+        
+    func configureImageView(_ name: String = "") {
+        if name.isEmpty {
+            posterImageView.image = nil
+            return
+        }
+        
         let url = URL(string: "\(AC.baseImageURL)\(name)")
         
         posterImageView.kf.setImage(with: url)

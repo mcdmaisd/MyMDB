@@ -15,7 +15,7 @@ class SearchViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar(self, C.searchMovieTitle)
+        configureNavigationTitle(self, C.searchMovieTitle)
         configureLeftBarButtonItem(self)
         initSearchBar(movieTitle)
     }

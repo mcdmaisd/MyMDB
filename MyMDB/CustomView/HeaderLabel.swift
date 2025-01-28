@@ -10,7 +10,7 @@ import UIKit
 final class HeaderLabel: UILabel {
     func configureLabel(_ title: String) {
         text = title
-        textColor = .customWhite
+        textColor = .white
         font = .boldSystemFont(ofSize: C.sizeXl)
         sizeToFit()
     }

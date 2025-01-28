@@ -35,19 +35,19 @@ final class UserInfoView: BaseView {
             make.top.equalToSuperview().inset(10)
             make.height.equalToSuperview().multipliedBy(0.4)
             make.width.equalTo(profileImageView.snp.height)
-            make.leading.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().inset(10)
         }
         
         profileButton.snp.makeConstraints { make in
             make.top.equalTo(profileImageView)
             make.leading.equalTo(profileImageView.snp.trailing).offset(10)
-            make.trailing.equalToSuperview().inset(20)
+            make.trailing.equalToSuperview().inset(10)
             make.height.equalToSuperview().multipliedBy(0.4)
         }
         
         myMovieButton.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(10)
-            make.horizontalEdges.equalToSuperview().inset(20)
+            make.top.equalTo(profileImageView.snp.bottom).offset(5)
+            make.horizontalEdges.equalToSuperview().inset(10)
             make.height.equalToSuperview().multipliedBy(0.3)
         }
     }
@@ -68,16 +68,17 @@ final class UserInfoView: BaseView {
     private func configureProfileButton() {
         let title = U.shared.get(C.nickNameKey, "")
         let subtitle = U.shared.get(C.dateKey, "")
-        
+        let container = AttributeContainer().font(.systemFont(ofSize: C.sizeXs))
+
         var config = UIButton.Configuration.plain()
         config.baseBackgroundColor = .clear
         config.title = title
-        config.subtitle = subtitle
         config.image = rightImage
         config.titleAlignment = .leading
         config.imagePlacement = .trailing
         config.contentInsets.leading = .zero
         config.contentInsets.trailing = .zero
+        config.attributedSubtitle = AttributedString(subtitle, attributes: container)
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { setting in
             var title = setting
             title.foregroundColor = UIColor.customWhite

@@ -20,7 +20,7 @@ public struct Constants {
     static let selectedBorderWidth: CGFloat = 3
     static let unselectedAlpha: CGFloat = 0.5
     static let selectedAlpha: CGFloat = 1
-    static let cornerRadius: CGFloat = 20
+    static let cornerRadius: CGFloat = 10
     static let tableViewCellHeight: CGFloat = 40
 
     static let profileImageCount = 12

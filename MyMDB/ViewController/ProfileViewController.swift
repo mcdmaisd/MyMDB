@@ -38,7 +38,7 @@ final class ProfileViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar(self, C.settingTitle)
+        configureNavigationTitle(self, C.settingTitle)
         initTableView()
     }
     

@@ -20,8 +20,9 @@ extension UIView {
     
     func setInfoConstraint(_ vc: UIViewController) {
         self.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalTo(vc.view.safeAreaLayoutGuide).inset(10)
-            make.height.equalTo(self.snp.width).dividedBy(3)
+            make.top.equalTo(vc.view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalTo(vc.view.safeAreaLayoutGuide).inset(10)
+            make.height.equalTo(self.snp.width).multipliedBy(0.3)
         }
     }
     
