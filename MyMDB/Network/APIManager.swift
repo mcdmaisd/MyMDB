@@ -18,7 +18,8 @@ final class APIManager {
             switch response.result {
             case .success(let value):
                 completionHandler(value)
-            case .failure:
+            case .failure(let error):
+                dump(error)
                 //guard let statusCode = response.response?.statusCode else { return }
                 //guard let result = HttpStatusCode(rawValue: statusCode)?.message else { return }
                 //view.presentAlert(message: result)

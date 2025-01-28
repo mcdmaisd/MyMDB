@@ -28,7 +28,7 @@ enum APIRouter: URLRequestConvertible {
     private var header: HTTPHeaders {
         switch self {
         case .trending, .search, .image, .credit:
-            return [AC.headerKey: "\(AC.headerValue)\(TMDB.key)"]
+            return [AC.headerKey: "\(AC.headerValuePrefix)\(TMDB.key)"]
         }
     }
     
@@ -40,7 +40,7 @@ enum APIRouter: URLRequestConvertible {
             return makePath([AC.search, AC.movie])
         case .image(let id):
             return makePath([AC.movie, "\(id)", AC.images])
-        case .credit(let id, let language):
+        case .credit(let id, _):
             return makePath([AC.movie, "\(id)", AC.credits])
         }
     }
@@ -50,10 +50,10 @@ enum APIRouter: URLRequestConvertible {
         case .trending(let language):
             return [AC.language: language, AC.page: AC.firstPage]
         case .search(let keyword, let adult, let page, let language):
-            return [AC.query: keyword, AC.adult: adult, AC.language: language, AC.page: AC.firstPage]
+            return [AC.query: keyword, AC.adult: adult, AC.language: language, AC.page: page]
         case .image:
             return nil
-        case .credit(let id, let language):
+        case .credit(_, let language):
             return [AC.language: language]
         }
     }

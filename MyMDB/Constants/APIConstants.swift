@@ -53,6 +53,6 @@ public struct APIConstants {
     static let adult = "include_adult"
     //MARK: header
     static let headerKey = "Authorization"
-    static let headerValue = "Bearer "
+    static let headerValuePrefix = "Bearer "
     
 }
