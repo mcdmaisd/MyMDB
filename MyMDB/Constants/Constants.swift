@@ -49,7 +49,7 @@ public struct Constants {
     static let setProfileImageTitle = "프로필 이미지 설정"
     static let editProfileTitle = "프로필 편집"
     static let editProfileImgaeTitle = "프로필 이미지 편집"
-    static let todayMovieTitle = "오늘의 영화"
+    static let main = "메인"
     static let searchMovieTitle = "영화 검색"
     static let settingTitle = "설정"
     static let save = "저장"
@@ -86,7 +86,20 @@ public struct Constants {
     static let dateStringFormat = "yy.MM.dd '가입'"
     static let locale = "ko_KR"
     static let failure = "Fail"
+    static let nilValue = "nil"
 
     static let userInfoChanged = "changed"
     static let userInfoKey = "key"
+    
+    static let recentSearches = "최근검색어"
+    static let todayMovie = "오늘의 영화"
+    static let synopsis = "Synopsis"
+    static let cast = "Cast"
+    static let poster = "Poster"
+    
+    static let removeAll = "전체 삭제"
+    static let more = "More"
+    static let emptyHistory = "최근 검색어 내역이 없습니다."
+    static let searchBarPlaceHolder = "영화를 검색해보세요"
+    
 }

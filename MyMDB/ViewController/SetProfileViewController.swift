@@ -13,7 +13,7 @@ final class SetProfileViewController: BaseViewController {
     private let statusLabel = UILabel()
     private let registerButton = CustomButton(title: C.completion)
     private let isEdit = U.shared.get(C.firstKey, false)
-    private let imageName = U.shared.get(C.profileImageKey, "")
+    private let imageName = U.shared.get(C.profileImageKey, C.randomProfileImage)
     
     private var hasInvalidLength = false
     private var hasInvalidCharacter = false

@@ -48,7 +48,7 @@ final class LikeButton: BaseView {
             list.append(tag)
         } else {
             guard let element = list.firstIndex(of: tag) else {
-                print("nil")
+                print(C.nilValue)
                 return
             }
             list.remove(at: element)

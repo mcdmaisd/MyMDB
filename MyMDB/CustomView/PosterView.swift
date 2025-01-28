@@ -28,7 +28,7 @@ final class PosterView: BaseView {
     }
     
     func configureImageView(_ name: String) {
-        let url = URL(string: name)
+        let url = URL(string: "\(AC.baseImageURL)\(name)")
         
         posterImageView.kf.setImage(with: url)
     }

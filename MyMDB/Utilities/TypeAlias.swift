@@ -9,3 +9,4 @@ import Foundation
 
 public typealias C = Constants
 public typealias U = UserDefaultsManager
+public typealias AC = APIConstants

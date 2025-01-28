@@ -40,13 +40,20 @@ extension UIViewController: SendTouchEvent {
         return layout
     }
     
-    func presentAlert(_ title: String, _ message: String) {
+    func presentAlert(_ title: String, _ message: String, _ delete: Bool = false) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: C.cancelActionTitle, style: .cancel))
+        
+        if delete {
+            alert.addAction(UIAlertAction(title: C.cancelActionTitle, style: .cancel))
+        }
+        
         alert.addAction(UIAlertAction(title: C.okActionTitle, style: .default, handler: { action in
-            self.changeRootView()
-            self.removeAllUserDefaults()
+            if delete {
+                self.changeRootView()
+                self.removeAllUserDefaults()
+            }
         }))
+        
         present(alert, animated: true)
     }
     
