@@ -10,10 +10,11 @@ import UIKit
 final class SetProfileImageViewController: BaseViewController {
     var image: String?
     var contents: ((String) -> Void)?
-
+    
     private lazy var profileView = ProfileContainerView(name: image ?? C.randomProfileImage)
     private lazy var selectedIndex = Int(image?.filter { $0.isNumber } ?? "") ?? 0
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(4))
+    private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     override func configureHierarchy() {
         addSubView(profileView)
@@ -28,16 +29,16 @@ final class SetProfileImageViewController: BaseViewController {
             make.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
-        
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let isEdit = U.shared.get(C.firstKey, false)
         let title = isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
-        configureNavigationBar(self, title)
+        configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         initCollectionView()
     }
-
+    
     private func initCollectionView() {
         collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false

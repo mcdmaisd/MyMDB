@@ -16,7 +16,8 @@ final class MainViewController: BaseViewController {
     private let stackView = UIStackView()
     private let todayMovie = HeaderLabel()
     
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(2))
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 2, inset: 10)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var keywords = U.shared.get(C.searchHistoryKey, [String]()) {
         didSet {
@@ -48,7 +49,7 @@ final class MainViewController: BaseViewController {
         infoView.setInfoConstraint(self)
         
         recentSearches.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(10)
+            make.top.equalTo(infoView.snp.bottom).offset(5)
             make.leading.equalTo(infoView)
         }
         
@@ -58,12 +59,12 @@ final class MainViewController: BaseViewController {
         }
         
         emptyHistory.snp.makeConstraints { make in
-            make.top.equalTo(recentSearches.snp.bottom).offset(10)
+            make.top.equalTo(recentSearches.snp.bottom).offset(5)
             make.centerX.equalToSuperview()
         }
         
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(recentSearches.snp.bottom).offset(10)
+            make.top.equalTo(recentSearches.snp.bottom).offset(5)
             make.leading.equalTo(recentSearches)
             make.trailing.equalToSuperview()
             make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
@@ -74,15 +75,15 @@ final class MainViewController: BaseViewController {
         }
         
         todayMovie.snp.makeConstraints { make in
-            make.top.equalTo(emptyHistory.snp.bottom).offset(20)
+            make.top.equalTo(emptyHistory.snp.bottom).offset(15)
             make.leading.equalTo(view.safeAreaLayoutGuide).inset(10)
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(todayMovie.snp.bottom)
-            make.bottom.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(todayMovie.snp.bottom).offset(5)
+            make.leading.equalTo(todayMovie)
+            make.bottom.trailing.equalTo(view.safeAreaLayoutGuide)
         }
-        
     }
     
     override func configureView() {
@@ -108,9 +109,16 @@ final class MainViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar(self, C.main)
+        configureNavigationTitle(self, C.main)
         configureRightBarButtonItem(self, nil, C.searchImage)
         configureStackView()
+        initCollectionView()
+        configureCollectionView()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        remakeFlowlayout(collectionView, widthRatio: 0.6)
     }
     
     private func hideView(_ empty: Bool) {
@@ -134,7 +142,7 @@ final class MainViewController: BaseViewController {
             image.isUserInteractionEnabled = true
             image.addGestureRecognizer(configureTapGestureRecognizer())
         }
-
+        
         return button
     }
     
@@ -146,7 +154,7 @@ final class MainViewController: BaseViewController {
     
     private func removeSubviews() {
         let subviews = stackView.arrangedSubviews
-    
+        
         subviews.forEach {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
@@ -158,11 +166,12 @@ final class MainViewController: BaseViewController {
         
         APIManager.shared.requestAPI(request) { (data: Trending) in
             self.movies = data.results
-            self.initCollectionView()
         }
     }
     
     private func initCollectionView() {
+        collectionView.backgroundColor = .clear
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(TodayMovieCollectionViewCell.self, forCellWithReuseIdentifier: TodayMovieCollectionViewCell.id)
@@ -200,7 +209,7 @@ final class MainViewController: BaseViewController {
         
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     override func rightBarButtonTapped() {
         moveToSearch()
     }
@@ -215,9 +224,13 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         let row = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.id, for: indexPath) as! TodayMovieCollectionViewCell
         
-        cell.
+        cell.configureData(movies[row])
         
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        //go to DetailVC
     }
     
     

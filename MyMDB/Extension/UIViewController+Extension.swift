@@ -24,22 +24,30 @@ extension UIViewController: SendTouchEvent {
         window.makeKeyAndVisible()
     }
     
-    func flowLayout(_ count: CGFloat) -> UICollectionViewFlowLayout {
+    func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat) -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
-        let numberOfItemsInLine: CGFloat = count
-        let inset: CGFloat = 5
         let screenWidth = UIScreen.main.bounds.width
-        let itemWidth = (screenWidth - (numberOfItemsInLine + 1) * inset) / numberOfItemsInLine
+        let itemWidth = (screenWidth - (itemCount + 1) * inset) / itemCount
         
-        layout.scrollDirection = .vertical
+        layout.scrollDirection = direction
         layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         layout.minimumLineSpacing = inset
         layout.minimumInteritemSpacing = inset
-        layout.sectionInset = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        layout.sectionInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
         
         return layout
     }
     
+    func remakeFlowlayout(_ cv: UICollectionView, widthRatio: CGFloat = 1, heightRatio: CGFloat = 1) {
+        guard let cell = cv.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+
+        let cellWidth = cv.frame.width * widthRatio
+        let cellHeight = cv.frame.height * heightRatio
+
+        cell.itemSize = CGSize(width: cellWidth, height: cellHeight)
+        cell.invalidateLayout()
+    }
+        
     func presentAlert(_ title: String, _ message: String, _ delete: Bool = false) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
@@ -57,7 +65,7 @@ extension UIViewController: SendTouchEvent {
         present(alert, animated: true)
     }
     
-    func configureNavigationBar(_ vc: UIViewController, _ title: String) {
+    func configureNavigationTitle(_ vc: UIViewController, _ title: String) {
         vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
         vc.navigationItem.title = title
     }
