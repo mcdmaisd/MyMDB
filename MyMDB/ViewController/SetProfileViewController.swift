@@ -80,7 +80,7 @@ final class SetProfileViewController: BaseViewController {
     override func rightBarButtonTapped() {
         save()
         dismissVC()
-        view.postNotification(true)
+        view.postNotification(C.userInfoChanged , true)
     }
 
     override func viewDidLoad() {

@@ -25,10 +25,10 @@ extension UIView {
             make.height.equalTo(self.snp.width).multipliedBy(0.3)
         }
     }
-    
-    func postNotification(_ value: Bool) {
+        
+    func postNotification(_ name: String, _ value: Bool, _ id: Int? = nil) {
         NotificationCenter.default.post(
-            name: NSNotification.Name(C.userInfoChanged), object: nil, userInfo: [C.userInfoKey: value]
+            name: NSNotification.Name(name), object: id, userInfo: [C.userInfoKey: value]
         )
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 final class LikeButton: BaseView {
     private let button = UIButton()
-    
+        
     override func configureHierarchy() {
         addView(button)
     }
@@ -39,11 +39,11 @@ final class LikeButton: BaseView {
             }
         }
     }
-    
+        
     private func changeValue(_ button: UIButton) {
         let tag = button.tag
         var list = U.shared.get(C.movieCountKey, [Int]())
-        
+
         if button.isSelected {
             list.append(tag)
         } else {
@@ -55,12 +55,12 @@ final class LikeButton: BaseView {
         }
         
         U.shared.set(list, C.movieCountKey)
-        postNotification(false)
+        postNotification(C.userInfoChanged, false, tag)
     }
-    
+        
     @objc
     private func buttonTapped(_ sender: UIButton) {
-        sender.isSelected.toggle()
+        button.isSelected.toggle()
         changeValue(button)
     }
 }
