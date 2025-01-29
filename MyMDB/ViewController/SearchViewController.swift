@@ -9,22 +9,103 @@ import UIKit
 
 class SearchViewController: BaseViewController {
     private let tableView = UITableView()
+    private let emptyLabel = HeaderLabel()
     
+    private var page = AC.firstPage
+    private var isNotFinished = false
+    
+    var totalPage: Int?
     var movieTitle: String?
     var keyword: ((String) -> Void)?
+    var searchResults: [Results] = [] {
+        didSet {
+            applyResult(searchResults.isEmpty)
+        }
+    }
+    
+    override func configureHierarchy() {
+        addSubView(tableView)
+        addSubView(emptyLabel)
+    }
+    
+    override func configureLayout() {
+        tableView.snp.makeConstraints { make in
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.verticalEdges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        emptyLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
+    override func configureView() {
+        emptyLabel.isHidden = true
+        emptyLabel.sizeToFit()
+        emptyLabel.configureLabel(C.emptySearchResult)
+        configureTableView(tableView)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationTitle(self, C.searchMovieTitle)
         configureLeftBarButtonItem(self)
         initSearchBar(movieTitle)
+        initTableView()
+    }
+    
+    private func applyResult(_ empty: Bool) {
+        emptyLabel.isHidden = !empty
+        
+        tableView.isHidden = empty
+        tableView.reloadData()
+        
+        if totalPage == nil {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        }
+    }
+    
+    private func initTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.prefetchDataSource = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.id)
+    }
+    
+    private func search(_ keyword: String, completionHandler: @escaping () -> Void) {
+        let request = APIRouter.search(keyword: keyword, page: page)
+        
+        APIManager.shared.requestAPI(request) { [self] (data: Movies) in
+            let result = data.results.filter { $0.genre_ids != nil }
+            
+            if page == 1 {
+                searchResults = result
+            } else {
+                searchResults.append(contentsOf: result)
+            }
+
+            if totalPage == nil { totalPage = data.total_pages }
+
+            completionHandler()
+        }
     }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+        let text = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if text.isEmpty { return }
+        
         keyword?(text)
+        
+        if movieTitle == text { return }
+        
+        movieTitle = text
+        totalPage = nil
+        page = AC.firstPage
+        
+        search(text) { }
     }
     
     private func initSearchBar(_ title: String?) {
@@ -41,5 +122,56 @@ extension SearchViewController: UISearchBarDelegate {
         
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
+    }
+}
+
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        searchResults.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = indexPath.row
+        let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultTableViewCell.id, for: indexPath) as! SearchResultTableViewCell
+        
+        cell.backgroundColor = .clear
+        cell.selectionStyle = .none
+        cell.configureData(searchResults[row])
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        navigationController?.pushViewController(MovieDetailViewController(), animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        C.estimatedHeight
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
+    }
+}
+
+extension SearchViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        guard let totalPage else { return }
+        if isNotFinished { return }
+        
+        for indexPath in indexPaths {
+            if indexPath.row >= searchResults.count - 6 && !isNotFinished {
+                if page > totalPage { return }
+                isNotFinished = true
+
+                search(movieTitle ?? "") { [self] in
+                    if page <= totalPage {
+                        page += 1
+                    }
+                    
+                    isNotFinished = false
+                }
+            }
+        }
     }
 }

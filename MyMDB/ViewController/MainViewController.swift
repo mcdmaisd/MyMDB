@@ -164,7 +164,7 @@ final class MainViewController: BaseViewController {
     private func configureCollectionView() {
         let request = APIRouter.trending()
         
-        APIManager.shared.requestAPI(request) { (data: Trending) in
+        APIManager.shared.requestAPI(request) { (data: Movies) in
             self.movies = data.results
         }
     }
@@ -196,15 +196,28 @@ final class MainViewController: BaseViewController {
     
     private func moveToSearch(_ title: String? = nil) {
         let vc = SearchViewController()
-        
+
         vc.movieTitle = title
         vc.keyword = { [self] data in
-            if keywords.contains(data) {
-                keywords.remove(at: keywords.firstIndex(of: data) ?? 0)
+            let result = keywords.filter { $0.localizedCaseInsensitiveCompare(data) == .orderedSame }
+            
+            if !result.isEmpty {
+                keywords.insert(result.first!, at: 0)
+                keywords.remove(at: keywords.lastIndex(of: result.first!) ?? 0)
+            } else {
+                keywords.insert(data, at: 0)
             }
             
-            keywords.insert(data, at: 0)
             scrollView.setContentOffset(.zero, animated: true)
+        }
+        
+        if let title {
+            let request = APIRouter.search(keyword: title, page: AC.firstPage)
+            
+            APIManager.shared.requestAPI(request) { (data: Movies) in
+                vc.totalPage = data.total_pages
+                vc.searchResults = data.results
+            }
         }
         
         navigationController?.pushViewController(vc, animated: true)
@@ -229,9 +242,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        //go to DetailVC
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        navigationController?.pushViewController(MovieDetailViewController(), animated: true)
     }
-    
     
 }

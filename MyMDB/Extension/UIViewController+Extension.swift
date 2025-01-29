@@ -14,7 +14,7 @@ extension UIViewController: SendTouchEvent {
             let window = windowScene.windows.first
         else { return }
 
-        let isNotFirst = UserDefaults.standard.bool(forKey: C.firstKey)
+        let isNotFirst = U.shared.get(C.firstKey, false)
         let onBoarding = UINavigationController(rootViewController: OnboardingViewController())
         let vc = isNotFirst ? onBoarding : TabBarController()
         
@@ -65,8 +65,22 @@ extension UIViewController: SendTouchEvent {
         present(alert, animated: true)
     }
     
+    func configureTableView(_ tv: UITableView) {
+        tv.backgroundColor = .clear
+        tv.tableHeaderView = UIView()
+        tv.separatorInset = UIEdgeInsets.zero
+        tv.separatorColor = .customDarkGray.withAlphaComponent(C.unselectedAlpha)
+    }
+    
     func configureNavigationTitle(_ vc: UIViewController, _ title: String) {
-        vc.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
+        let appearance = UINavigationBarAppearance()
+        
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .customBlack
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.customWhite]
+        
+        vc.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        vc.navigationController?.navigationBar.standardAppearance = appearance
         vc.navigationItem.title = title
     }
     
@@ -123,6 +137,12 @@ extension UIViewController: SendTouchEvent {
         }
         
         present(vc, animated: true, completion: nil)
+    }
+    
+    func checkDuplication(_ data: [Results]) {
+        let list = data.map { $0.id }
+        let setList = Set(list)
+        print("result:", list.count == setList.count, "list count: \(list.count), set count: \(setList.count)")
     }
 
     @objc
