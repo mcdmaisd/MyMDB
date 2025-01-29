@@ -101,6 +101,7 @@ public struct Constants {
     
     static let removeAll = "전체 삭제"
     static let more = "More"
+    static let hide = "Hide"
     static let emptyHistory = "최근 검색어 내역이 없습니다."
     static let searchBarPlaceHolder = "영화를 검색해보세요"
     static let emptyOverView = "상세설명이 제공되지 않습니다."
