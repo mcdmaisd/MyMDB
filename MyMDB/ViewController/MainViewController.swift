@@ -114,6 +114,14 @@ final class MainViewController: BaseViewController {
         configureStackView()
         initCollectionView()
         configureCollectionView()
+        NotificationCenter
+            .default
+            .addObserver(self, selector:#selector(reloadButton), name: NSNotification.Name(C.userInfoChanged), object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -194,6 +202,20 @@ final class MainViewController: BaseViewController {
         moveToSearch(keywords[tag])
     }
     
+    @objc
+    private func reloadButton(_ notification: Notification) {
+        if let data = notification.object as? Int {
+            for (i, movie) in movies.enumerated() {
+                if movie.id == data {
+                    UIView.performWithoutAnimation {
+                        collectionView.reloadItems(at: [IndexPath(item: i, section: 0)])
+                    }
+                    break
+                }
+            }
+        }
+    }
+    
     private func moveToSearch(_ title: String? = nil) {
         let vc = SearchViewController()
 
@@ -210,7 +232,7 @@ final class MainViewController: BaseViewController {
             
             scrollView.setContentOffset(.zero, animated: true)
         }
-        
+                
         if let title {
             let request = APIRouter.search(keyword: title, page: AC.firstPage)
             
@@ -243,7 +265,9 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(MovieDetailViewController(), animated: true)
+        let vc = MovieDetailViewController()
+        vc.result = movies[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }
