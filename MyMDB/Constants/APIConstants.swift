@@ -54,5 +54,4 @@ public struct APIConstants {
     //MARK: header
     static let headerKey = "Authorization"
     static let headerValuePrefix = "Bearer "
-    
 }

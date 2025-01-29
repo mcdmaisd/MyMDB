@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct Trending: Codable {
+struct Movies: Codable {
     let results: [Results]
+    let total_pages: Int
 }
 
 struct Results: Codable {
     let id: Int
-    var backdrop_path: String
-    var title: String
-    var overview: String
-    var poster_path: String
-    var genre_ids: [Int]
-    var release_date: String
-    var vote_average: Double
+    let title: String
+    let overview: String
+    let poster_path: String?
+    let release_date: String?
+    let vote_average: Double?
+    let genre_ids: [Int]?
 }

@@ -21,8 +21,10 @@ public struct Constants {
     static let unselectedAlpha: CGFloat = 0.5
     static let selectedAlpha: CGFloat = 1
     static let cornerRadius: CGFloat = 10
+    static let tableViewCellInset: CGFloat = 20
     static let tableViewCellHeight: CGFloat = 40
-
+    static let estimatedHeight: CGFloat = 100
+    
     static let profileImageCount = 12
     
     static let range = 0...11
@@ -101,5 +103,7 @@ public struct Constants {
     static let more = "More"
     static let emptyHistory = "최근 검색어 내역이 없습니다."
     static let searchBarPlaceHolder = "영화를 검색해보세요"
+    static let emptyOverView = "상세설명이 제공되지 않습니다."
+    static let emptySearchResult = "검색 결과가 없습니다."
     
 }
