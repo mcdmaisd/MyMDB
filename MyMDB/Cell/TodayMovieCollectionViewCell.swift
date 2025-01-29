@@ -67,7 +67,7 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         likeButton.configureButton()
         overviewLabel.configureLabel()
     }
-    
+        
     func configureData(_ data: Results) {
         posterImageView.configureImageView(data.poster_path ?? "")
         titleLabel.configureLabel(data.title)

@@ -25,7 +25,7 @@ final class GenreView: BaseView {
         clipsToBounds = true
         backgroundColor = .darkGray
         
-        label.font = .systemFont(ofSize: C.sizeMd)
+        label.font = .systemFont(ofSize: C.sizeXl)
         label.textColor = .customLightGray
     }
     

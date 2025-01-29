@@ -47,7 +47,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         
         likeButton.snp.makeConstraints { make in
             make.trailing.equalTo(safeAreaLayoutGuide).inset(5)
-            make.size.equalTo(dateLabel.snp.height)
+            make.size.equalTo(posterView.snp.height).dividedBy(4)
             make.bottom.equalTo(posterView)
         }
         
@@ -60,6 +60,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     override func configureView() {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        
         dateLabel.setContentHuggingPriority(.required, for: .vertical)
         dateLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         
