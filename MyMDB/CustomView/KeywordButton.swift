@@ -9,7 +9,10 @@ import UIKit
 
 final class KeywordButton: UIButton {
     func configureButton(_ title: String, _ tag: Int) {
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: C.sizeSm)
+
         var config = UIButton.Configuration.filled()
+        config.preferredSymbolConfigurationForImage = imageConfig
         config.baseBackgroundColor = .lightGray
         config.baseForegroundColor = .customBlack
         config.imagePlacement = .trailing
