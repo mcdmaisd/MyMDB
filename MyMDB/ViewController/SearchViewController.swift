@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SearchViewController: BaseViewController {
+final class SearchViewController: BaseViewController {
     private let tableView = UITableView()
     private let emptyLabel = HeaderLabel()
     
@@ -60,7 +60,7 @@ class SearchViewController: BaseViewController {
         tableView.isHidden = empty
         tableView.reloadData()
         
-        if totalPage == nil {
+        if totalPage == nil && !searchResults.isEmpty {
             tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         }
     }
@@ -69,6 +69,7 @@ class SearchViewController: BaseViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.prefetchDataSource = self
+        tableView.keyboardDismissMode = .onDrag
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.id)
     }
