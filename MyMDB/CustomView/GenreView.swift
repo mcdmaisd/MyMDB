@@ -16,17 +16,17 @@ final class GenreView: BaseView {
     
     override func configureLayout() {
         label.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(5)
+            make.edges.equalToSuperview().inset(3)
         }
     }
     
     override func configureView() {
-        layer.cornerRadius = C.cornerRadius
+        layer.cornerRadius = 5
         clipsToBounds = true
-        backgroundColor = .gray
+        backgroundColor = .darkGray
         
         label.font = .systemFont(ofSize: C.sizeMd)
-        label.textColor = .lightGray
+        label.textColor = .customLightGray
     }
     
     func configureLabel(_ genre: String) {

@@ -8,11 +8,11 @@
 import UIKit
 
 final class HeaderLabel: UILabel {
-    func configureLabel(_ title: String) {
+    func configureLabel(_ title: String = "", _ line: Int = 1) {
         text = title
         textColor = .white
+        numberOfLines = line
         font = .boldSystemFont(ofSize: C.sizeXl)
-        sizeToFit()
     }
     
     override init(frame: CGRect) {

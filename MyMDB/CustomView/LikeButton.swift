@@ -20,7 +20,7 @@ final class LikeButton: BaseView {
         }
     }
     
-    func configureButton(_ id: Int) {
+    func configureButton(_ id: Int = 0) {
         let list = U.shared.get(C.movieCountKey, [Int]())
         
         var config = UIButton.Configuration.filled()

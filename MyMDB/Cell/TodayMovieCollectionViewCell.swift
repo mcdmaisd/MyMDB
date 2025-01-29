@@ -37,6 +37,7 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
             make.height.equalTo(titleLabel)
             make.width.equalTo(likeButton.snp.height)
             make.bottom.equalTo(titleLabel)
+            make.leading.equalTo(titleLabel.snp.trailing).offset(5)
             make.trailing.equalToSuperview()
         }
         
@@ -52,19 +53,23 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     
     override func configureView() {
         posterImageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        
+        likeButton.setContentHuggingPriority(.required, for: .horizontal)
+        likeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        
         overviewLabel.setContentCompressionResistancePriority(.required, for: .vertical)
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        posterImageView.configureImageView("")
-        titleLabel.configureLabel("")
-        likeButton.configureButton(0)
-        overviewLabel.configureLabel("", 2)
+        posterImageView.configureImageView()
+        titleLabel.configureLabel()
+        likeButton.configureButton()
+        overviewLabel.configureLabel()
     }
-        
+    
     func configureData(_ data: Results) {
-        posterImageView.configureImageView(data.poster_path)
+        posterImageView.configureImageView(data.poster_path ?? "")
         titleLabel.configureLabel(data.title)
         likeButton.configureButton(data.id)
         overviewLabel.configureLabel(data.overview, 2)

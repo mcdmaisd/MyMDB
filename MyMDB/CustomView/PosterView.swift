@@ -28,7 +28,7 @@ final class PosterView: BaseView {
         
     func configureImageView(_ name: String = "") {
         if name.isEmpty {
-            posterImageView.image = nil
+            posterImageView.image = UIImage.no
             return
         }
         

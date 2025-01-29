@@ -7,8 +7,8 @@
 import UIKit
 
 final class OverViewLabel: UILabel {
-    func configureLabel(_ title: String, _ lines: Int) {
-        text = title.isEmpty ? "상세설명이 제공되지 않습니다." : title
+    func configureLabel(_ title: String = "", _ lines: Int = 1) {
+        text = title.isEmpty ? C.emptyOverView : title
         numberOfLines = lines
         textColor = .lightGray
         font = .systemFont(ofSize: C.sizeSm)

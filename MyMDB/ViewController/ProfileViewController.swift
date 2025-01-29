@@ -29,11 +29,7 @@ final class ProfileViewController: BaseViewController {
     
     override func configureView() {
         infoView.delegate = self
-        
-        tableView.backgroundColor = .clear
-        tableView.tableHeaderView = UIView()
-        tableView.separatorInset = UIEdgeInsets.zero
-        tableView.separatorColor = .customDarkGray.withAlphaComponent(C.unselectedAlpha)
+        configureTableView(tableView)
     }
     
     override func viewDidLoad() {

@@ -8,7 +8,7 @@
 import UIKit
 
 class CustomLabel: UILabel {
-    func configureLabel(_ title: String) {
+    func configureLabel(_ title: String = "") {
         text = title
         textColor = .gray
         font = .systemFont(ofSize: C.sizeMd)
