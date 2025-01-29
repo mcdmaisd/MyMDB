@@ -14,22 +14,22 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     private let titleLabel = HeaderLabel()
     private let dateLabel = CustomLabel()
     private let likeButton = LikeButton()
-    private let mainStackView = UIStackView()
+    private let scrollView = UIScrollView()
     private let stackView = UIStackView()
-        
+    
     override func configureHierarchy() {
         addSubView(posterView)
         addSubView(titleLabel)
         addSubView(dateLabel)
         addSubView(likeButton)
-        //addSubView(mainStackView)
-        addSubView(stackView)
+        addSubView(scrollView)
+        scrollView.addSubview(stackView)
     }
     
     override func configureLayout() {
         posterView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.verticalEdges.equalToSuperview().inset(20)
+            make.top.bottom.equalToSuperview().inset(20).priority(.high)
             make.width.equalToSuperview().dividedBy(4)
             make.height.equalTo(posterView.snp.width).multipliedBy(1.5)
         }
@@ -51,9 +51,15 @@ final class SearchResultTableViewCell: BaseTableViewCell {
             make.bottom.equalTo(posterView)
         }
         
-        stackView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel)
+            make.trailing.equalTo(likeButton.snp.leading).offset(-5)
             make.bottom.equalTo(posterView)
+            make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
+        }
+        
+        stackView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
         }
     }
     
@@ -63,6 +69,8 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         
         dateLabel.setContentHuggingPriority(.required, for: .vertical)
         dateLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        scrollView.showsHorizontalScrollIndicator = false
         
         stackView.axis = .horizontal
         stackView.spacing = 5
@@ -87,35 +95,23 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         }
     }
     
-    private func configureSubStackView() -> UIStackView {
-        let subStackView = UIStackView()
-        
-        subStackView.axis = .horizontal
-        subStackView.spacing = 5
-        subStackView.distribution = .fillProportionally
-        
-        return subStackView
-    }
-    
     private func configureGenreView(_ genres: [Int]) {
-        //var genreViews: [GenreView] = []
-
+        var genreViews: [GenreView] = []
+        
         for genre in genres {
             let genre = AC.genreDictionary[genre] ?? ""
             let genreView = GenreView()
             
             genreView.configureLabel(genre)
-            stackView.addArrangedSubview(genreView)
+            genreViews.append(genreView)
         }
         
-        //configureStackView(genreViews)
+        configureStackView(genreViews)
     }
     
     private func configureStackView(_ views: [GenreView]) {
-        var index = 0
-        
         for view in views {
-            
+            stackView.addArrangedSubview(view)
         }
     }
     
