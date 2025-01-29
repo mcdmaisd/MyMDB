@@ -40,10 +40,11 @@ extension UIViewController: SendTouchEvent {
     
     func remakeFlowlayout(_ cv: UICollectionView, widthRatio: CGFloat = 1, heightRatio: CGFloat = 1) {
         guard let cell = cv.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-
         let cellWidth = cv.frame.width * widthRatio
         let cellHeight = cv.frame.height * heightRatio
 
+        if cell.itemSize.width == cellWidth && cell.itemSize.height == cellHeight { return }
+        
         cell.itemSize = CGSize(width: cellWidth, height: cellHeight)
         cell.invalidateLayout()
     }
