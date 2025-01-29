@@ -21,8 +21,9 @@ final class PosterView: BaseView {
     }
     
     override func configureView() {
-        posterImageView.layer.masksToBounds = true
-        posterImageView.layer.cornerRadius = C.cornerRadius
+        clipsToBounds = true
+        layer.cornerRadius = C.cornerRadius
+        
         posterImageView.contentMode = .scaleAspectFill
     }
         
