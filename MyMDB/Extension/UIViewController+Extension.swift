@@ -145,6 +145,12 @@ extension UIViewController: SendTouchEvent {
         let setList = Set(list)
         print("result:", list.count == setList.count, "list count: \(list.count), set count: \(setList.count)")
     }
+    
+    func moveToDetailVC(_ from: UIViewController, _ data: Results) {
+        let vc = MovieDetailViewController()
+        vc.result = data
+        from.navigationController?.pushViewController(vc, animated: true)
+    }
 
     @objc
     func back() {

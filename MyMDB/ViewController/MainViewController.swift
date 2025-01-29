@@ -265,9 +265,6 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = MovieDetailViewController()
-        vc.result = movies[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        moveToDetailVC(self, movies[indexPath.row])
     }
-    
 }

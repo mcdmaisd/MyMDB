@@ -52,6 +52,23 @@ final class SearchViewController: BaseViewController {
         configureLeftBarButtonItem(self)
         initSearchBar(movieTitle)
         initTableView()
+        NotificationCenter
+            .default
+            .addObserver(self, selector:#selector(reloadButton), name: NSNotification.Name(C.userInfoChanged), object: nil)
+    }
+    
+    @objc
+    private func reloadButton(_ notification: Notification) {
+        if let data = notification.object as? Int {
+            for (i, movie) in searchResults.enumerated() {
+                if movie.id == data {
+                    UIView.performWithoutAnimation {
+                        tableView.reloadRows(at: [IndexPath(row: i, section: 0)], with: .automatic)
+                    }
+                    break
+                }
+            }
+        }
     }
     
     private func applyResult(_ empty: Bool) {
@@ -143,7 +160,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        navigationController?.pushViewController(MovieDetailViewController(), animated: true)
+        moveToDetailVC(self, searchResults[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
