@@ -11,6 +11,9 @@ final class MovieDetailViewController: BaseViewController {
     private let likeButton = LikeButton()
     private let pageControl = UIPageControl()
     private let infoStackView = UIStackView()
+    private let synopsis = HeaderLabel()
+    private let moreButton = LabelButton(title: C.more)
+    private let synopsisLabel = OverViewLabel()
     
     private lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(direction: .horizontal, itemCount: 1, inset: 0))
     
@@ -31,6 +34,10 @@ final class MovieDetailViewController: BaseViewController {
     override func configureHierarchy() {
         addSubView(backdropCollectionView)
         addSubView(pageControl)
+        addSubView(synopsis)
+        addSubView(moreButton)
+        addSubView(synopsisLabel)
+        addSubView(infoStackView)
     }
     
     override func configureLayout() {
@@ -43,6 +50,43 @@ final class MovieDetailViewController: BaseViewController {
             make.horizontalEdges.equalTo(backdropCollectionView)
             make.bottom.equalTo(backdropCollectionView.snp.bottom)
         }
+        
+        infoStackView.snp.makeConstraints { make in
+            make.top.equalTo(backdropCollectionView.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
+        
+        synopsis.snp.makeConstraints { make in
+            make.top.equalTo(infoStackView.snp.bottom).offset(20)
+            make.leading.equalTo(backdropCollectionView).inset(10)
+        }
+        
+        moreButton.snp.makeConstraints { make in
+            make.centerY.equalTo(synopsis)
+            make.trailing.equalTo(backdropCollectionView).offset(-10)
+        }
+        
+        synopsisLabel.snp.makeConstraints { make in
+            make.top.equalTo(synopsis.snp.bottom).offset(10)
+            make.horizontalEdges.equalToSuperview().inset(10)
+        }
+    }
+    
+    @objc
+    private func moreButtonTapped(_ sender: UIButton) {
+        var title = sender.titleLabel?.text ?? ""
+        var line = 0
+        
+        if title == C.more {
+            title = C.hide
+        } else {
+            title = C.more
+            line = 3
+        }
+        
+        sender.setTitle(title, for: .normal)
+        synopsisLabel.configureLabel(result?.overview ?? "", line)
     }
     
     override func configureView() {
@@ -50,6 +94,18 @@ final class MovieDetailViewController: BaseViewController {
         pageControl.isUserInteractionEnabled = false
         pageControl.currentPageIndicatorTintColor = .customWhite
         pageControl.pageIndicatorTintColor = .gray
+        
+        infoStackView.axis = .horizontal
+        infoStackView.distribution = .fillProportionally
+        infoStackView.backgroundColor = .gray
+        infoStackView.spacing = 1
+        
+        synopsis.configureLabel(C.synopsis)
+        
+        synopsisLabel.sizeToFit()
+        synopsisLabel.configureLabel(result?.overview ?? "", 3)
+        
+        moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
     
     override func viewDidLoad() {
@@ -58,6 +114,19 @@ final class MovieDetailViewController: BaseViewController {
         configureNavigationBar(result)
         initCollectionView()
         makeImages(result)
+        configureStackView()
+    }
+    
+    private func configureStackView() {
+        guard let result else { return }
+        let genres = result.genre_ids?.map { AC.genreDictionary[$0] }.prefix(2).compactMap { $0 }.joined(separator: ", ") ?? ""
+        let date = MovieInfoButton(title: result.release_date ?? "", image: C.calendar)
+        let rate = MovieInfoButton(title: String(format: "%.1f", result.vote_average ?? 0.0), image: C.star)
+        let genre = MovieInfoButton(title: genres, image: C.filmFill)
+        
+        infoStackView.addArrangedSubview(date)
+        infoStackView.addArrangedSubview(rate)
+        infoStackView.addArrangedSubview(genre)
     }
             
     private func initCollectionView() {
