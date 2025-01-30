@@ -27,14 +27,14 @@ final class PosterView: BaseView {
         posterImageView.contentMode = .scaleAspectFill
     }
         
-    func configureImageView(_ name: String = "") {
+    func configureImageView(_ name: String = "", _ fit: Bool = false) {
         if name.isEmpty {
             posterImageView.image = UIImage.no
             return
         }
         
         let url = URL(string: "\(AC.baseImageURL)\(name)")
-        
         posterImageView.kf.setImage(with: url)
+        if fit { posterImageView.contentMode = .scaleAspectFit }
     }
 }
