@@ -21,3 +21,13 @@ struct Results: Codable {
     let vote_average: Double?
     let genre_ids: [Int]?
 }
+
+struct Images: Codable {
+    let backdrops: [ImageInfo]
+    let posters: [ImageInfo]
+}
+
+struct ImageInfo: Codable {
+    let aspect_ratio: Double
+    let file_path: String
+}
