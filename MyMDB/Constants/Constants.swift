@@ -106,5 +106,6 @@ public struct Constants {
     static let searchBarPlaceHolder = "영화를 검색해보세요"
     static let emptyOverView = "상세설명이 제공되지 않습니다."
     static let emptySearchResult = "검색 결과가 없습니다."
-    
+    static let noCast = "배우 목록이 제공되지 않습니다."
+    static let noPoster = "포스터 이미지가 제공되지 않습니다."
 }
