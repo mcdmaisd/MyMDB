@@ -53,7 +53,7 @@ final class MovieDetailViewController: BaseViewController {
         }
         
         backdropCollectionView.snp.makeConstraints { make in
-            make.top.width.equalTo(scrollView.contentLayoutGuide)
+            make.top.width.equalToSuperview()
             make.height.equalTo(0)
         }
         
@@ -136,16 +136,7 @@ final class MovieDetailViewController: BaseViewController {
         configureStackView()
         makeImages(result)
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.tableView.snp.updateConstraints { make in
-                make.height.equalTo(self.tableView.contentSize.height)
-            }
-        }
-    }
-    
+        
     private func configureStackView() {
         guard let result else { return }
         let genres = result.genre_ids?.map { AC.genreDictionary[$0] }.prefix(2).compactMap { $0 }.joined(separator: AC.comma) ?? ""
@@ -168,7 +159,6 @@ final class MovieDetailViewController: BaseViewController {
     }
     
     private func initTableView() {
-        tableView.sectionHeaderTopPadding = .zero
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.delegate = self
@@ -195,7 +185,7 @@ final class MovieDetailViewController: BaseViewController {
                 let result = Array(data.backdrops.prefix(5))
                 self.data[1] = data.posters
                 self.backdrops = result
-                self.ratio = result.first?.aspect_ratio ?? 2
+                self.ratio = result.first?.aspect_ratio ?? 1
                 self.pageControl.numberOfPages = result.count
                 group.leave()
             }
@@ -211,6 +201,11 @@ final class MovieDetailViewController: BaseViewController {
         
         group.notify(queue: .main) {
             self.tableView.reloadData()
+            self.tableView.layoutIfNeeded()
+            self.tableView.snp.updateConstraints {
+                $0.height.equalTo(self.tableView.contentSize.height)
+            }
+            self.scrollView.layoutIfNeeded()
         }
     }
     
