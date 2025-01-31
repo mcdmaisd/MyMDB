@@ -11,7 +11,7 @@ final class SetProfileImageViewController: BaseViewController {
     var image: String?
     var contents: ((String) -> Void)?
     
-    private lazy var profileView = ProfileContainerView(name: image ?? C.randomProfileImage)
+    private lazy var profileView = ProfileContainerView(name: image ?? "")
     private lazy var selectedIndex = Int(image?.filter { $0.isNumber } ?? "") ?? 0
     private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)

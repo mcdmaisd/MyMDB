@@ -52,7 +52,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         }
         
         scrollView.snp.makeConstraints { make in
-            make.leading.equalTo(titleLabel)
+            make.leading.equalTo(titleLabel.snp.leading)
             make.trailing.equalTo(likeButton.snp.leading).offset(-5)
             make.bottom.equalTo(posterView)
             make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
@@ -118,7 +118,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     func configureData(_ data: Results) {
         posterView.configureImageView(data.poster_path ?? "")
         titleLabel.configureLabel(data.title, 2)
-        dateLabel.configureLabel(data.release_date?.replacingOccurrences(of: "-", with: ". ") ?? "")
+        dateLabel.configureLabel(data.release_date?.replacingOccurrences(of: AC.dash, with: AC.period) ?? "")
         likeButton.configureButton(data.id)
         configureGenreView(data.genre_ids ?? [])
     }

@@ -32,7 +32,11 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
         imageView.configureImageView()
     }
         
-    func configureData(_ data: ImageInfo) {
-        imageView.configureImageView(data.file_path, true)
+    func configureData(_ data: ImageInfo?) {
+        if let data {
+            imageView.configureImageView(data.file_path, true)
+        } else {
+            imageView.configureImageView("", true)
+        }
     }
 }

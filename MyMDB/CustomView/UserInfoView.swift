@@ -61,7 +61,7 @@ final class UserInfoView: BaseView {
     }
     
     private func configureUpperView() {
-        profileImageView.configureImage(U.shared.get(C.profileImageKey, nil))
+        profileImageView.configureImage(U.shared.get(C.profileImageKey, ""))
         configureProfileButton()
     }
     

@@ -113,7 +113,10 @@ final class SearchViewController: BaseViewController {
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let text = searchBar.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if text.isEmpty { return }
+        if text.isEmpty {
+            presentAlert("", C.emptyMessage)
+            return
+        }
         
         keyword?(text)
         

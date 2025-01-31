@@ -35,6 +35,9 @@ public struct APIConstants {
     static let firstPage = 1
     //MARK: separator
     static let separator = "/"
+    static let comma = ", "
+    static let period = ". "
+    static let dash = "-"
     //MARK: url
     static let baseURL = "https://api.themoviedb.org/3/"
     static let baseImageURL = "https://image.tmdb.org/t/p/original"

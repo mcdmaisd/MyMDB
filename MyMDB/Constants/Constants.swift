@@ -72,6 +72,7 @@ public struct Constants {
     static let invalidNumber = "닉네임에 숫자는 포함할 수 없어요"
     static let invalidCharacterSet = "@#$%"
     static let newline = "\n"
+    static let slash = "/"
     
     static let firstKey = "first"
     static let profileImageKey = "profileImage"
@@ -104,6 +105,7 @@ public struct Constants {
     static let hide = "Hide"
     static let emptyHistory = "최근 검색어 내역이 없습니다."
     static let searchBarPlaceHolder = "영화를 검색해보세요"
+    static let emptyMessage = "검색어를 최소 1자 이상 입력해주세요"
     static let emptyOverView = "상세설명이 제공되지 않습니다."
     static let emptySearchResult = "검색 결과가 없습니다."
     static let noCast = "배우 목록이 제공되지 않습니다."

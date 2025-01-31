@@ -31,3 +31,13 @@ struct ImageInfo: Codable {
     let aspect_ratio: Double
     let file_path: String
 }
+
+struct Cast: Codable {
+    let cast: [CastInfo]
+}
+
+struct CastInfo: Codable {
+    let original_name: String?
+    let profile_path: String?
+    let character: String?
+}

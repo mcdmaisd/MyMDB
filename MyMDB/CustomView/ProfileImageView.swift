@@ -32,17 +32,25 @@ final class ProfileImageView: BaseView {
         layer.cornerRadius = frame.width / 2
     }
     
-    func configureImage(_ name: String?) {
-        guard let name else { return }
-        profileImageView.image = UIImage(named: name)
-    }
-    
-    func configureImageByUrl(_ name: String) {
+    private func configureImageByUrl(_ name: String) {
         layer.borderColor = nil
         layer.borderWidth = .zero
         
-        let url = URL(string: name)
+        let url = URL(string: "\(AC.baseImageURL)\(name)")
         
         profileImageView.kf.setImage(with: url)
+    }
+    
+    func configureImage(_ name: String = "") {
+        let imageName = name.isEmpty ? C.tabbarImages[2] : name
+        
+        if imageName.contains(C.slash) {
+            configureImageByUrl(imageName)
+            return
+        } else if imageName.contains("_") {
+            profileImageView.image = UIImage(named: imageName)
+        } else {
+            profileImageView.image = UIImage(systemName: imageName)
+        }
     }
 }
