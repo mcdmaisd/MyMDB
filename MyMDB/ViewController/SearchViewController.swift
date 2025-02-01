@@ -54,7 +54,7 @@ final class SearchViewController: BaseViewController {
         initTableView()
         NotificationCenter
             .default
-            .addObserver(self, selector:#selector(reloadButton), name: NSNotification.Name(C.userInfoChanged), object: nil)
+            .addObserver(self, selector:#selector(reloadButton), name: .name, object: nil)
     }
     
     @objc

@@ -111,4 +111,5 @@ public struct Constants {
     static let noCast = "배우 목록이 제공되지 않습니다."
     static let noPoster = "포스터 이미지가 제공되지 않습니다."
     static let noInfo = "정보 없음"
+    static let likeButtonMessages = [true: "영화가 무비박스에 보관되었습니다.", false: "영화가 무비박스에서 삭제되었습니다."]
 }

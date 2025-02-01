@@ -17,7 +17,8 @@ final class MovieDetailViewController: BaseViewController {
     private let synopsisLabel = OverViewLabel()
     private let tableView = UITableView()
     
-    private lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(direction: .horizontal, itemCount: 1, inset: 0))
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 0)
+    private lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var ratio: Double = 0 {
         didSet {

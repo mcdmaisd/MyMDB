@@ -11,7 +11,8 @@ final class CastAndPosterTableViewCell: BaseTableViewCell {
     private let inset: CGFloat = 10
     static let id = getId()
     
-    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(direction: .horizontal, itemCount: 1, inset: 10))
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10)
+    private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var results: [Any] = [] {
         didSet {

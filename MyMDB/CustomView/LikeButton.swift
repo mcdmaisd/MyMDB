@@ -43,7 +43,7 @@ final class LikeButton: BaseView {
     private func changeValue(_ button: UIButton) {
         let tag = button.tag
         var list = U.shared.get(C.movieCountKey, [Int]())
-
+        
         if button.isSelected {
             list.append(tag)
         } else {
@@ -54,6 +54,7 @@ final class LikeButton: BaseView {
             list.remove(at: element)
         }
         
+        presentToast(C.likeButtonMessages[button.isSelected] ?? "")
         U.shared.set(list, C.movieCountKey)
         postNotification(C.userInfoChanged, false, tag)
     }
