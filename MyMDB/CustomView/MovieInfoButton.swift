@@ -21,7 +21,7 @@ final class MovieInfoButton: UIButton {
     private func configureButton() {
         let container = AttributeContainer().font(.systemFont(ofSize: C.sizeXs))
         let imageConfig = UIImage.SymbolConfiguration(pointSize: C.sizeXs)
-        let title = self.title.isEmpty ? "정보 없음" : self.title
+        let title = self.title.isEmpty ? C.noInfo : self.title
         var config = UIButton.Configuration.filled()
         config.preferredSymbolConfigurationForImage = imageConfig
         config.baseBackgroundColor = .customBlack

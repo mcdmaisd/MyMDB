@@ -9,7 +9,7 @@ import UIKit
 
 class CustomLabel: UILabel {
     func configureLabel(_ title: String = "") {
-        text = title
+        text = title.isEmpty ? C.noInfo : title
         textColor = .gray
         font = .systemFont(ofSize: C.sizeMd)
         sizeToFit()
