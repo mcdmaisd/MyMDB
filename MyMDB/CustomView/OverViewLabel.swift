@@ -12,7 +12,6 @@ final class OverViewLabel: UILabel {
         numberOfLines = lines
         textColor = .lightGray
         font = .systemFont(ofSize: C.sizeSm)
-        sizeToFit()
     }
     
     override init(frame: CGRect) {
