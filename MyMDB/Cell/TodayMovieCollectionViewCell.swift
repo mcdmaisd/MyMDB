@@ -30,13 +30,12 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.bottom.equalTo(overviewLabel.snp.top)
         }
         
         likeButton.snp.makeConstraints { make in
             make.height.equalTo(titleLabel)
             make.width.equalTo(likeButton.snp.height)
-            make.bottom.equalTo(titleLabel)
+            make.bottom.equalTo(overviewLabel.snp.top).offset(-5)
             make.leading.equalTo(titleLabel.snp.trailing).offset(5)
             make.trailing.equalToSuperview()
         }
@@ -47,13 +46,16 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         
         posterImageView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
-            make.bottom.equalTo(likeButton.snp.top)
+            make.bottom.equalTo(likeButton.snp.top).offset(-5)
         }
     }
     
     override func configureView() {
         posterImageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         
+        titleLabel.setContentHuggingPriority(.required, for: .vertical)
+        titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+
         likeButton.setContentHuggingPriority(.required, for: .horizontal)
         likeButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         

@@ -119,11 +119,6 @@ final class MainViewController: BaseViewController {
             .addObserver(self, selector:#selector(reloadButton), name: .name, object: nil)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         remakeFlowlayout(collectionView, widthRatio: 0.6)

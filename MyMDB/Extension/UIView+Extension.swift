@@ -37,11 +37,13 @@ extension UIView {
         var style = ToastStyle()
         style.messageColor = .customWhite
         style.backgroundColor = .customTheme
+        
         guard
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
             let window = windowScene.windows.first
         else { return }
+        
         let center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-        window.makeToast(message, duration: 1, point: center, title: nil, image: nil, style: style, completion: nil)
+        window.makeToast(message, duration: 2, point: center, title: nil, image: nil, style: style, completion: nil)
     }
 }

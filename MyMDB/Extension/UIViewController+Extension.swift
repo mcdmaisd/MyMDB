@@ -33,7 +33,7 @@ extension UIViewController: SendTouchEvent {
         layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         layout.minimumLineSpacing = inset
         layout.minimumInteritemSpacing = inset
-        layout.sectionInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: inset)
         
         return layout
     }
