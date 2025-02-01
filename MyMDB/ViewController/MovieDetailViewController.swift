@@ -180,7 +180,7 @@ final class MovieDetailViewController: BaseViewController {
         let group = DispatchGroup()
         
         group.enter()
-        APIManager.shared.requestAPI(imageRequest) { (data: Images) in
+        APIManager.shared.requestAPI(imageRequest, self) { (data: Images) in
             DispatchQueue.main.async {
                 let result = Array(data.backdrops.prefix(5))
                 self.data[1] = data.posters
@@ -192,7 +192,7 @@ final class MovieDetailViewController: BaseViewController {
         }
         
         group.enter()
-        APIManager.shared.requestAPI(creditRequest) { (data: Cast) in
+        APIManager.shared.requestAPI(creditRequest, self) { (data: Cast) in
             DispatchQueue.main.async {
                 self.data[0] = data.cast
                 group.leave()

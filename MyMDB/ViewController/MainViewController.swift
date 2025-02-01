@@ -170,9 +170,7 @@ final class MainViewController: BaseViewController {
     }
     
     private func configureCollectionView() {
-        let request = APIRouter.trending()
-        
-        APIManager.shared.requestAPI(request) { (data: Movies) in
+        APIManager.shared.requestAPI(APIRouter.trending, self) { (data: Movies) in
             self.movies = data.results
         }
     }
@@ -245,7 +243,7 @@ final class MainViewController: BaseViewController {
         if let title {
             let request = APIRouter.search(keyword: title, page: AC.firstPage)
             
-            APIManager.shared.requestAPI(request) { (data: Movies) in
+            APIManager.shared.requestAPI(request, self) { (data: Movies) in
                 vc.totalPage = data.total_pages
                 vc.searchResults = data.results
             }

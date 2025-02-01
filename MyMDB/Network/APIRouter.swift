@@ -9,10 +9,10 @@ import Foundation
 import Alamofire
 
 enum APIRouter: URLRequestConvertible {
-    case trending(language: String = AC.locale)
-    case search(keyword: String, adult: Bool = false, page: Int, language: String = AC.locale)
+    case trending
+    case search(keyword: String, page: Int)
     case image(id: Int)
-    case credit(id: Int, language: String = AC.locale)
+    case credit(id: Int)
     
     private var baseURL: URL {
         return URL(string: AC.baseURL)!
@@ -40,21 +40,20 @@ enum APIRouter: URLRequestConvertible {
             return makePath([AC.search, AC.movie])
         case .image(let id):
             return makePath([AC.movie, "\(id)", AC.images])
-        case .credit(let id, _):
+        case .credit(let id):
             return makePath([AC.movie, "\(id)", AC.credits])
         }
     }
     
     private var parameter: Parameters? {
         switch self {
-        case .trending(let language):
-            return [AC.language: language, AC.page: AC.firstPage]
-        case .search(let keyword, let adult, let page, let language):
-            return [AC.query: keyword, AC.adult: adult, AC.language: language, AC.page: page]
+        case .trending, .credit:
+            return AC.baseParam
+        case .search(let keyword, let page):
+            let dict = [AC.query: keyword, AC.adult: AC.notInclude, AC.page: "\(page)"]
+            return dict.merging(AC.baseParam) { _, _ in fatalError(AC.mergeFailed) }
         case .image:
             return nil
-        case .credit(_, let language):
-            return [AC.language: language]
         }
     }
     

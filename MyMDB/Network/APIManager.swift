@@ -13,16 +13,15 @@ final class APIManager {
     
     private init() { }
     
-    func requestAPI<T: Codable>(_ router: APIRouter, _ completionHandler: @escaping (T) -> Void) {
+    func requestAPI<T: Codable>(_ router: APIRouter, _ view: UIViewController, _ completionHandler: @escaping (T) -> Void) {
         AF.request(router).responseDecodable(of: T.self) { response in
             switch response.result {
             case .success(let value):
                 completionHandler(value)
-            case .failure(let error):
-                dump(error)
-                //guard let statusCode = response.response?.statusCode else { return }
-                //guard let result = HttpStatusCode(rawValue: statusCode)?.message else { return }
-                //view.presentAlert(message: result)
+            case .failure:
+                guard let statusCode = response.response?.statusCode else { return }
+                guard let result = HttpStatusCode(rawValue: statusCode)?.message else { return }
+                view.presentAlert(nil, result)
             }
         }
     }

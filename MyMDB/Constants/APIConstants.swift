@@ -54,7 +54,19 @@ public struct APIConstants {
     static let page = "page"
     static let query = "query"
     static let adult = "include_adult"
+    static let notInclude = "false"
+    static let baseParam = [language: locale]
     //MARK: header
     static let headerKey = "Authorization"
     static let headerValuePrefix = "Bearer "
+    //MARK: error message
+    static let mergeFailed = ""
+    static let badRequest = "The input is not valid."
+    static let invalidToken = "Invalid token."
+    static let forbidden = "This user has been suspended."
+    static let notFound = "The resource, id, session you requested could not be found."
+    static let tooManyRequests = "Your request count (#) is over the allowed limit of (40)."
+    static let serverError = "Internal Server Error"
+    static let serviceUnavailable = "Service Unavailable"
+    static let timeOut = "Your request to the backend server timed out. Try again."
 }
