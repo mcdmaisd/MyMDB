@@ -199,7 +199,11 @@ final class MainViewController: BaseViewController {
     @objc
     private func buttonTapped(_ sender: UIButton) {
         let tag = sender.tag
-        moveToSearch(keywords[tag])
+        let word = keywords[tag]
+    
+        moveToSearch(word)
+        if tag == 0 { return }
+        insertWord(word)
     }
     
     @objc
@@ -216,6 +220,14 @@ final class MainViewController: BaseViewController {
         }
     }
     
+    private func insertWord(_ word: String) {
+        if let index = keywords.firstIndex(of: word) {
+            keywords.remove(at: index)
+        }
+        keywords.insert(word, at: 0)
+        scrollView.setContentOffset(.zero, animated: true)
+    }
+    
     private func moveToSearch(_ title: String? = nil) {
         let vc = SearchViewController()
 
@@ -224,13 +236,10 @@ final class MainViewController: BaseViewController {
             let result = keywords.filter { $0.localizedCaseInsensitiveCompare(data) == .orderedSame }
             
             if !result.isEmpty {
-                keywords.insert(result.first!, at: 0)
-                keywords.remove(at: keywords.lastIndex(of: result.first!) ?? 0)
+                insertWord(result.first!)
             } else {
-                keywords.insert(data, at: 0)
+                insertWord(data)
             }
-            
-            scrollView.setContentOffset(.zero, animated: true)
         }
                 
         if let title {

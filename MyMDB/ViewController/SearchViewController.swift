@@ -158,7 +158,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
-        print(movieTitle)
+        
         cell.configureData(searchResults[row], movieTitle ?? "")
         
         return cell
