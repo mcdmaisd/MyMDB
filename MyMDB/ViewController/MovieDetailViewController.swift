@@ -17,7 +17,6 @@ final class MovieDetailViewController: BaseViewController {
     private let synopsisLabel = OverViewLabel()
     private let tableView = UITableView()
     
-    
     private lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(direction: .horizontal, itemCount: 1, inset: 0))
     
     private var ratio: Double = 0 {
@@ -159,6 +158,7 @@ final class MovieDetailViewController: BaseViewController {
     }
     
     private func initTableView() {
+        tableView.isHidden = true
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.delegate = self
@@ -202,6 +202,7 @@ final class MovieDetailViewController: BaseViewController {
         group.notify(queue: .main) {
             self.tableView.reloadData()
             self.tableView.layoutIfNeeded()
+            self.tableView.isHidden = false
             self.tableView.snp.updateConstraints {
                 $0.height.equalTo(self.tableView.contentSize.height)
             }
@@ -216,6 +217,19 @@ final class MovieDetailViewController: BaseViewController {
         
         likeButton.configureButton(result.id)
         navigationItem.rightBarButtonItem?.customView = likeButton
+    }
+    
+    private func configureHeaderView(_ section: Int) -> UIView {
+        let header = HeaderLabel()
+        let empty = data[section].isEmpty
+        
+        if empty {
+            header.configureLabel(C.emptyHeaderMessage[section])
+        } else {
+            header.configureLabel(C.sectionHeaders[section])
+        }
+        
+        return header
     }
 }
 
@@ -244,13 +258,11 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
+        data[section].count == 0 ? 0 : 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = HeaderLabel()
-        section == 0 ? header.configureLabel(C.cast) : header.configureLabel(C.poster)
-        return header
+        configureHeaderView(section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

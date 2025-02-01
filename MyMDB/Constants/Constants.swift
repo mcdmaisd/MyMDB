@@ -97,8 +97,8 @@ public struct Constants {
     static let recentSearches = "최근검색어"
     static let todayMovie = "오늘의 영화"
     static let synopsis = "Synopsis"
-    static let cast = "Cast"
-    static let poster = "Poster"
+    static let sectionHeaders = ["Cast", "Poster"]
+    static let emptyHeaderMessage = [noCast, noPoster]
     
     static let removeAll = "전체 삭제"
     static let more = "More"

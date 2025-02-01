@@ -8,6 +8,9 @@
 import UIKit
 
 final class CastAndPosterTableViewCell: BaseTableViewCell {
+    private let inset: CGFloat = 10
+    static let id = getId()
+    
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout(direction: .horizontal, itemCount: 1, inset: 10))
     
     private var results: [Any] = [] {
@@ -15,9 +18,6 @@ final class CastAndPosterTableViewCell: BaseTableViewCell {
             collectionView.reloadData()
         }
     }
-    
-    private let inset: CGFloat = 10
-    static let id = getId()
     
     override func configureHierarchy() {
         addSubView(collectionView)
