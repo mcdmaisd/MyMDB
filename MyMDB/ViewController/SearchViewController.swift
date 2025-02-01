@@ -87,6 +87,7 @@ final class SearchViewController: BaseViewController {
         tableView.dataSource = self
         tableView.prefetchDataSource = self
         tableView.keyboardDismissMode = .onDrag
+        tableView.rowHeight = UIScreen.main.bounds.width / 2
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.id)
     }

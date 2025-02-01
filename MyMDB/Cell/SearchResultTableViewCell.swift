@@ -31,9 +31,8 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     override func configureLayout() {
         posterView.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.top.bottom.equalToSuperview().inset(20).priority(.high)
+            make.top.bottom.equalToSuperview().inset(20)
             make.width.equalToSuperview().dividedBy(4)
-            make.height.equalTo(posterView.snp.width).multipliedBy(1.5)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -51,20 +50,20 @@ final class SearchResultTableViewCell: BaseTableViewCell {
             make.top.equalTo(dateLabel.snp.bottom).offset(5)
             make.leading.equalTo(titleLabel)
             make.trailing.equalTo(likeButton)
-            make.bottom.lessThanOrEqualTo(likeButton.snp.top).offset(-5)
+            make.bottom.equalTo(likeButton.snp.top).offset(-5)
         }
         
         likeButton.snp.makeConstraints { make in
             make.trailing.equalTo(safeAreaLayoutGuide)
-            make.size.equalTo(posterView.snp.height).dividedBy(4)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
+            make.size.equalTo(safeAreaLayoutGuide.snp.width).dividedBy(10)
+            make.centerY.equalTo(scrollView)
         }
         
         scrollView.snp.makeConstraints { make in
             make.leading.equalTo(titleLabel.snp.leading)
             make.trailing.equalTo(likeButton.snp.leading).offset(-5)
-            make.bottom.equalTo(posterView)
             make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
+            make.bottom.equalTo(posterView)
         }
         
         stackView.snp.makeConstraints { make in
@@ -80,10 +79,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         dateLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         
         scrollView.showsHorizontalScrollIndicator = false
-        
-        overviewLabel.setContentHuggingPriority(.required, for: .vertical)
-        overviewLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        
+    
         likeButton.setContentHuggingPriority(.required, for: .vertical)
         likeButton.setContentCompressionResistancePriority(.required, for: .vertical)
         
@@ -102,16 +98,13 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         removeSubviews()
     }
     
-    private func remakeLayout(_ empty: Bool) {
+    private func remakeLayout() {
         likeButton.snp.remakeConstraints { make in
             make.trailing.equalTo(safeAreaLayoutGuide).inset(5)
-            make.size.equalTo(posterView.snp.height).dividedBy(4)
-            if empty {
-                make.bottom.equalTo(posterView)
-            } else {
-                make.centerY.equalTo(scrollView)
-            }
+            make.size.equalTo(safeAreaLayoutGuide.snp.width).dividedBy(10)
+            make.bottom.equalTo(posterView)
         }
+        self.layoutIfNeeded()
     }
             
     private func removeSubviews() {
@@ -124,7 +117,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     }
     
     private func configureGenreView(_ genres: [Int]) {
-        remakeLayout(genres.isEmpty)
+        if genres.isEmpty { remakeLayout() }
         var genreViews: [GenreView] = []
         
         for genre in genres {

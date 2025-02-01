@@ -244,12 +244,11 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        data[section].count == 0 ? 0 : 1
+        1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = HeaderLabel()
-        if data[section].count == 0 { return nil }
         section == 0 ? header.configureLabel(C.cast) : header.configureLabel(C.poster)
         return header
     }
