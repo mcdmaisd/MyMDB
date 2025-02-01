@@ -23,7 +23,7 @@ final class UserInfoView: BaseView {
         outlineView.addSubview(myMovieButton)
         NotificationCenter
             .default
-            .addObserver(self, selector:#selector(receiveNotification), name: NSNotification.Name(C.userInfoChanged), object: nil)
+            .addObserver(self, selector:#selector(receiveNotification), name: .name, object: nil)
     }
     
     override func configureLayout() {
