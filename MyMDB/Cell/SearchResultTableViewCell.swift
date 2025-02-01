@@ -137,11 +137,11 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         }
     }
     
-    func configureData(_ data: Results) {
+    func configureData(_ data: Results, _ keyword: String = "") {
         posterView.configureImageView(data.poster_path ?? "")
-        titleLabel.configureLabel(data.title, 2)
+        titleLabel.configureLabel(data.title, 2, keyword)
         dateLabel.configureLabel(data.release_date?.replacingOccurrences(of: AC.dash, with: AC.period) ?? "")
-        overviewLabel.configureLabel(data.overview, 3)
+        overviewLabel.configureLabel(data.overview, 3, keyword)
         likeButton.configureButton(data.id)
         configureGenreView(data.genre_ids ?? [])
     }
