@@ -9,11 +9,7 @@ import UIKit
 
 extension UIViewController: SendTouchEvent {
     func changeRootView() {
-        guard
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-            let window = windowScene.windows.first
-        else { return }
-
+        let window = UIApplication.shared.getCurrentScene()
         let isNotFirst = U.shared.get(C.firstKey, false)
         let onBoarding = UINavigationController(rootViewController: OnboardingViewController())
         let vc = isNotFirst ? onBoarding : TabBarController()
@@ -40,6 +36,7 @@ extension UIViewController: SendTouchEvent {
     
     func remakeFlowlayout(_ cv: UICollectionView, widthRatio: CGFloat = 1, heightRatio: CGFloat = 1) {
         guard let cell = cv.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        
         let cellWidth = cv.frame.width * widthRatio
         let cellHeight = cv.frame.height * heightRatio
 

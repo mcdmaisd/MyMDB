@@ -252,7 +252,8 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        pageControl.currentPage = Int(floor(scrollView.contentOffset.x / UIScreen.main.bounds.width))
+        let scene = UIApplication.shared.getCurrentScene()
+        pageControl.currentPage = Int(floor(scrollView.contentOffset.x / scene.bounds.width))
     }
 }
 
@@ -280,6 +281,6 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        UIScreen.main.bounds.width / 3
+        UIApplication.shared.getCurrentScene().bounds.width / 3
     }
 }
