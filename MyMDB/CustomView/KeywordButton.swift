@@ -8,7 +8,17 @@
 import UIKit
 
 final class KeywordButton: UIButton {
-    func configureButton(_ title: String, _ tag: Int) {
+    private let title: String
+    private let id: Int
+    
+    init(_ title: String, _ id: Int) {
+        self.title = title
+        self.id = id
+        super.init(frame: .zero)
+        configureButton()
+    }
+    
+    private func configureButton() {
         let imageConfig = UIImage.SymbolConfiguration(pointSize: C.sizeSm)
 
         var config = UIButton.Configuration.filled()
@@ -23,11 +33,7 @@ final class KeywordButton: UIButton {
         config.image = UIImage(systemName: C.xmark)
         config.imagePadding = 5
         configuration = config
-        self.tag = tag
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
+        self.tag = id
     }
     
     required init?(coder: NSCoder) {

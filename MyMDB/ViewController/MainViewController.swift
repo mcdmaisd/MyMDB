@@ -137,8 +137,7 @@ final class MainViewController: BaseViewController {
     }
     
     private func configureButton(_ tag: Int, _ keyword: String) -> KeywordButton {
-        let button = KeywordButton()
-        button.configureButton(keyword, tag)
+        let button = KeywordButton(keyword, tag)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         
         if let image = button.imageView {
