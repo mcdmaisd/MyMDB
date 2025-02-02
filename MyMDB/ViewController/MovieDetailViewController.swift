@@ -140,13 +140,16 @@ final class MovieDetailViewController: BaseViewController {
     private func configureStackView() {
         guard let result else { return }
         let genres = result.genre_ids?.map { AC.genreDictionary[$0] }.prefix(2).compactMap { $0 }.joined(separator: AC.comma) ?? ""
-        let date = MovieInfoButton(title: result.release_date ?? "", image: C.calendar)
-        let rate = MovieInfoButton(title: String(format: "%.1f", result.vote_average ?? 0.0), image: C.star)
-        let genre = MovieInfoButton(title: genres, image: C.filmFill)
+        let movieInfo = [
+            result.release_date ?? "",
+            String(format: "%.1f", result.vote_average ?? 0.0),
+            genres
+        ]
         
-        infoStackView.addArrangedSubview(date)
-        infoStackView.addArrangedSubview(rate)
-        infoStackView.addArrangedSubview(genre)
+        for (i, image) in C.infoStackImages.enumerated() {
+            let info = MovieInfoButton(title: movieInfo[i], image: image)
+            infoStackView.addArrangedSubview(info)
+        }
     }
     
     private func initCollectionView() {

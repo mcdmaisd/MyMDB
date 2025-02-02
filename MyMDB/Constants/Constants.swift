@@ -41,6 +41,7 @@ public struct Constants {
     static let calendar = "calendar"
     static let star = "star.fill"
     static let filmFill = "film.fill"
+    static let infoStackImages = [calendar, star, filmFill]
     static let forward = "chevron.forward"
     static let backward = "chevron.backward"
     static let dismissKeyboardImage = "keyboard.chevron.compact.down"

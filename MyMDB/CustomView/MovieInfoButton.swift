@@ -22,6 +22,7 @@ final class MovieInfoButton: UIButton {
         let container = AttributeContainer().font(.systemFont(ofSize: C.sizeXs))
         let imageConfig = UIImage.SymbolConfiguration(pointSize: C.sizeXs)
         let title = self.title.isEmpty ? C.noInfo : self.title
+        
         var config = UIButton.Configuration.filled()
         config.preferredSymbolConfigurationForImage = imageConfig
         config.baseBackgroundColor = .customBlack
@@ -33,6 +34,7 @@ final class MovieInfoButton: UIButton {
         config.image = UIImage(systemName: image)
         config.attributedTitle = AttributedString(title, attributes: container)
         configuration = config
+        
         isUserInteractionEnabled = false
         sizeToFit()
     }
