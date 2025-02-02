@@ -103,7 +103,7 @@ final class MovieDetailViewController: BaseViewController {
         }
         
         sender.setTitle(title, for: .normal)
-        synopsisLabel.configureLabel(result?.overview ?? "", line)
+        synopsisLabel.configureData(result?.overview ?? "", line)
     }
     
     override func configureView() {
@@ -119,10 +119,10 @@ final class MovieDetailViewController: BaseViewController {
         infoStackView.backgroundColor = .gray
         infoStackView.spacing = 1
         
-        synopsis.configureLabel(C.synopsis)
+        synopsis.configureData(C.synopsis)
         
         synopsisLabel.lineBreakMode = .byTruncatingTail
-        synopsisLabel.configureLabel(result?.overview ?? "", 3)
+        synopsisLabel.configureData(result?.overview ?? "", 3)
         
         moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
@@ -225,9 +225,9 @@ final class MovieDetailViewController: BaseViewController {
         let empty = data[section].isEmpty
         
         if empty {
-            header.configureLabel(C.emptyHeaderMessage[section])
+            header.configureData(C.emptyHeaderMessage[section])
         } else {
-            header.configureLabel(C.sectionHeaders[section])
+            header.configureData(C.sectionHeaders[section])
         }
         
         return header

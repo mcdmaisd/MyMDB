@@ -51,13 +51,13 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         super.prepareForReuse()
         profileImage.layer.borderWidth = .zero
         profileImage.configureImage()
-        nameLabel.configureLabel()
+        nameLabel.configureData()
         characterLabel.configureLabel()
     }
     
     func configureData(_ data: CastInfo) {
         profileImage.configureImage(data.profile_path ?? "")
-        nameLabel.configureLabel(data.original_name ?? "")
+        nameLabel.configureData(data.original_name ?? "")
         characterLabel.configureLabel(data.character ?? "")
     }
 }

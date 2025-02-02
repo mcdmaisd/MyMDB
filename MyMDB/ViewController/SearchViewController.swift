@@ -42,7 +42,7 @@ final class SearchViewController: BaseViewController {
     override func configureView() {
         emptyLabel.isHidden = true
         emptyLabel.sizeToFit()
-        emptyLabel.configureLabel(C.emptySearchResult)
+        emptyLabel.configureData(C.emptySearchResult)
         configureTableView(tableView)
     }
     

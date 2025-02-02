@@ -89,7 +89,7 @@ final class MainViewController: BaseViewController {
     override func configureView() {
         infoView.delegate = self
         
-        recentSearches.configureLabel(C.recentSearches)
+        recentSearches.configureData(C.recentSearches)
         
         hideView(keywords.isEmpty)
         
@@ -104,7 +104,7 @@ final class MainViewController: BaseViewController {
         stackView.distribution = .fillProportionally
         stackView.axis = .horizontal
         
-        todayMovie.configureLabel(C.todayMovie)
+        todayMovie.configureData(C.todayMovie)
     }
     
     override func viewDidLoad() {

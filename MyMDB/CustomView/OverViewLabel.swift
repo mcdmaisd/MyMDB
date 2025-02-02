@@ -7,12 +7,9 @@
 import UIKit
 
 final class OverViewLabel: UILabel {
-    func configureLabel(_ title: String = "", _ lines: Int = 1, _ target: String = "") {
-        let text = title.isEmpty ? C.emptyOverView.changeColor(target) : title.changeColor(target)
-        numberOfLines = lines
-        textColor = .lightGray
-        attributedText =  text
-        font = .systemFont(ofSize: C.sizeSm)
+    func configureData(_ title: String = "", _ line: Int = 1, _ target: String = "") {
+        let text = title.isEmpty ? C.emptyOverView : title
+        configureLabel(text, line, .lightGray, target, C.sizeSm)
     }
     
     override init(frame: CGRect) {

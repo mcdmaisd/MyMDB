@@ -65,15 +65,15 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         posterImageView.configureImageView()
-        titleLabel.configureLabel()
+        titleLabel.configureData()
         likeButton.configureButton()
-        overviewLabel.configureLabel()
+        overviewLabel.configureData()
     }
         
     func configureData(_ data: Results) {
         posterImageView.configureImageView(data.poster_path ?? "")
-        titleLabel.configureLabel(data.title)
+        titleLabel.configureData(data.title)
         likeButton.configureButton(data.id)
-        overviewLabel.configureLabel(data.overview, 2)
+        overviewLabel.configureData(data.overview, 2)
     }
 }
