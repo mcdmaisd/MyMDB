@@ -17,16 +17,16 @@ class BaseViewController: UIViewController {
     
     override func loadView() {
         super.loadView()
-        NetworkMonitor.shared.startCheckingNetwork()
-        NetworkMonitor.shared.status = { data in
-            DispatchQueue.main.async {
-                if data == .unsatisfied {
-                    self.view.presentToast("인터넷 연결이 불안정 합니다.")
-                } else {
-                    self.view.presentToast("인터넷이 다시 연결 되었습니다.")
-                }
-            }
-        }
+//        NetworkMonitor.shared.startCheckingNetwork()
+//        NetworkMonitor.shared.status = { data in
+//            DispatchQueue.main.async {
+//                if data == .unsatisfied {
+//                    self.view.presentToast("인터넷 연결이 불안정 합니다.")
+//                } else {
+//                    self.view.presentToast("인터넷이 다시 연결 되었습니다.")
+//                }
+//            }
+//        }
     }
         
     override func viewDidLoad() {
@@ -35,11 +35,6 @@ class BaseViewController: UIViewController {
         configureHierarchy()
         configureLayout()
         configureView()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NetworkMonitor.shared.stopCheckingNetwork()
     }
     
     func configureHierarchy() {}

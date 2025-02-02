@@ -56,7 +56,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         likeButton.snp.makeConstraints { make in
             make.trailing.equalTo(safeAreaLayoutGuide)
             make.size.equalTo(safeAreaLayoutGuide.snp.width).dividedBy(10)
-            make.centerY.equalTo(scrollView)
+            make.bottom.equalTo(posterView).offset(5)
         }
         
         scrollView.snp.makeConstraints { make in
@@ -97,15 +97,6 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         likeButton.configureButton()
         removeSubviews()
     }
-    
-    private func remakeLayout() {
-        likeButton.snp.remakeConstraints { make in
-            make.trailing.equalTo(safeAreaLayoutGuide).inset(5)
-            make.size.equalTo(safeAreaLayoutGuide.snp.width).dividedBy(10)
-            make.bottom.equalTo(posterView)
-        }
-        self.layoutIfNeeded()
-    }
             
     private func removeSubviews() {
         let subviews = stackView.arrangedSubviews
@@ -117,7 +108,6 @@ final class SearchResultTableViewCell: BaseTableViewCell {
     }
     
     private func configureGenreView(_ genres: [Int]) {
-        if genres.isEmpty { remakeLayout() }
         var genreViews: [GenreView] = []
         
         for genre in genres {
