@@ -139,6 +139,7 @@ final class MovieDetailViewController: BaseViewController {
         
     private func configureStackView() {
         guard let result else { return }
+        
         let genres = result.genre_ids?.map { AC.genreDictionary[$0] }.prefix(2).compactMap { $0 }.joined(separator: AC.comma) ?? ""
         let movieInfo = [
             result.release_date ?? "",

@@ -87,7 +87,7 @@ final class SearchViewController: BaseViewController {
         tableView.dataSource = self
         tableView.prefetchDataSource = self
         tableView.keyboardDismissMode = .onDrag
-        tableView.rowHeight = UIScreen.main.bounds.width / 2
+        tableView.rowHeight = UIApplication.shared.getCurrentScene().bounds.width / 2
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SearchResultTableViewCell.self, forCellReuseIdentifier: SearchResultTableViewCell.id)
     }
@@ -158,7 +158,6 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
-        
         cell.configureData(searchResults[row], movieTitle ?? "")
         
         return cell

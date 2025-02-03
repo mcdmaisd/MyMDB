@@ -11,7 +11,7 @@ final class CastAndPosterTableViewCell: BaseTableViewCell {
     private let inset: CGFloat = 10
     static let id = getId()
     
-    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10)
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: self.inset)
     private(set) lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var results: [Any] = [] {
@@ -55,41 +55,42 @@ extension CastAndPosterTableViewCell: UICollectionViewDelegate, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let row = indexPath.row
-        let item = results[row]
         let tag = collectionView.tag
+        let item = results[row]
+        let cellType = CellType(rawValue: tag) ?? .cast
+        let id = cellType.id
         
-        if tag == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CastCollectionViewCell.id, for: indexPath) as! CastCollectionViewCell
-            if let cast = item as? CastInfo {
-                cell.configureData(cast)
-            }
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PosterCollectionViewCell.id, for: indexPath) as! PosterCollectionViewCell
-            if let cast = item as? ImageInfo {
-                cell.configureData(cast.file_path)
-            }
-            return cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
+        
+        switch cellType {
+        case .cast:
+            let data = item as! CastInfo
+            (cell as! CastCollectionViewCell).configureData(data)
+        case .poster:
+            let data = item as! ImageInfo
+            (cell as! PosterCollectionViewCell).configureData(data.file_path)
         }
+        
+        return cell
     }
 }
 
 extension CastAndPosterTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let row = indexPath.row
-        let item = results[row]
+        let poster = results[row] as? ImageInfo
         let tag = collectionView.tag
+        let cellType = CellType(rawValue: tag) ?? .cast
 
-        if tag == 0 {
+        switch cellType {
+        case .cast:
             return CGSize(
                 width: (collectionView.bounds.width - inset) / 2,
                 height: (collectionView.bounds.height - inset) / 2
             )
-        } else {
-            guard let poster = item as? ImageInfo else { return .zero }
-            
+        case .poster:
             let height = collectionView.bounds.height
-            let itemWidth = height * poster.aspect_ratio
+            let itemWidth = height * (poster?.aspect_ratio ?? 0)
             let itemHeight = height
             
             return CGSize(width: itemWidth, height: itemHeight)
