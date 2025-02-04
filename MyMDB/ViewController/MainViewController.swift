@@ -16,7 +16,7 @@ final class MainViewController: BaseViewController {
     private let stackView = UIStackView()
     private let todayMovie = HeaderLabel()
     
-    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 2, inset: 10)
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10, 0.6)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var keywords = U.shared.get(C.searchHistoryKey, [String]()) {
@@ -96,7 +96,6 @@ final class MainViewController: BaseViewController {
         removeAllButton.addTarget(self, action: #selector(removeAllButtonTapped), for: .touchUpInside)
         
         emptyHistory.configureLabel(C.emptyHistory)
-        emptyHistory.sizeToFit()
         
         scrollView.showsHorizontalScrollIndicator = false
         
@@ -117,11 +116,6 @@ final class MainViewController: BaseViewController {
         NotificationCenter
             .default
             .addObserver(self, selector:#selector(reloadButton), name: .name, object: nil)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        remakeFlowlayout(collectionView, widthRatio: 0.6)
     }
     
     private func hideView(_ empty: Bool) {
@@ -226,12 +220,7 @@ final class MainViewController: BaseViewController {
         vc.movieTitle = title
         vc.keyword = { [self] data in
             let result = keywords.filter { $0.localizedCaseInsensitiveCompare(data) == .orderedSame }
-            
-            if !result.isEmpty {
-                insertWord(result.first!)
-            } else {
-                insertWord(data)
-            }
+            result.isEmpty ? insertWord(data) : insertWord(result.first!)
         }
                 
         if let title {

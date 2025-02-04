@@ -240,6 +240,7 @@ final class MovieDetailViewController: BaseViewController {
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        // collectionview 2개 만들어서 if collectionview = backdropcv {} 이렇게 나누기
         backdrops.isEmpty ? 1 : backdrops.count
     }
     
@@ -247,7 +248,7 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
         let row = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as! BackdropCollectionViewCell
         
-        backdrops.isEmpty ? cell.configureData(nil) : cell.configureData(backdrops[row])
+        backdrops.isEmpty ? cell.configureData() : cell.configureData(backdrops[row])
         
         return cell
     }

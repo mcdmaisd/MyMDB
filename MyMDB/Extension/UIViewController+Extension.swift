@@ -20,13 +20,13 @@ extension UIViewController: SendTouchEvent {
         window.makeKeyAndVisible()
     }
     
-    func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat) -> UICollectionViewFlowLayout {
+    func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat, _ widthRatio: CGFloat = 1, _ heightRatio: CGFloat = 1) -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
-        let screenWidth = UIScreen.main.bounds.width
+        let screenWidth = UIApplication.shared.getCurrentScene().bounds.width
         let itemWidth = (screenWidth - (itemCount + 1) * inset) / itemCount
         
         layout.scrollDirection = direction
-        layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
+        layout.itemSize = CGSize(width: itemWidth * widthRatio, height: itemWidth * heightRatio)
         layout.minimumLineSpacing = inset
         layout.minimumInteritemSpacing = inset
         layout.sectionInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: inset)
