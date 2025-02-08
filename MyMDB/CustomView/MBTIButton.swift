@@ -8,8 +8,10 @@
 import UIKit
 
 class MBTIButton: BaseView {
-    private let button = UIButton()
-    
+    private(set) var button = UIButton()
+        
+    var keys: ((Bool) -> Void)?
+
     override func configureHierarchy() {
         addView(button)
     }
@@ -30,14 +32,13 @@ class MBTIButton: BaseView {
         self.layer.cornerRadius = self.frame.width / 2
     }
     
-    func configureButton(_ title: String, _ id: Int, _ isSelected: Bool) {
+    func configureButton(_ title: String, _ isSelected: Bool) {
         var config = UIButton.Configuration.filled()
         config.title = title
         button.configuration = config
-        button.tag = id
         button.isSelected = isSelected
-        button.addTarget(self, action: #selector(buttonTappedd), for: .touchUpInside)
-        button.configurationUpdateHandler = { btn in
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.configurationUpdateHandler = {btn in
             switch btn.state {
             case .selected:
                 btn.configuration?.baseForegroundColor = .customWhite
@@ -50,7 +51,8 @@ class MBTIButton: BaseView {
     }
     
     @objc
-    private func buttonTappedd(_ sender: UIButton) {
+    private func buttonTapped(_ sender: UIButton) {
         sender.isSelected.toggle()
+        keys?(sender.isSelected)
     }
 }

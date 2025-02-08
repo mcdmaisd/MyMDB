@@ -8,37 +8,41 @@
 import UIKit
 
 class MBTIView: BaseView {
-    private let MBTILabel = HeaderLabel()
-    private let MBTIStackView = UIStackView()
-    private let ESTJStackView = UIStackView()
-    private let INFPStackView = UIStackView()
+    private let mbtiLabel = HeaderLabel()
+    private let mbtiStackView = UIStackView()
+    private let estjStackView = UIStackView()
+    private let infpStackView = UIStackView()
+    
+    private var buttons: [[MBTIButton]] = [[], []]
+    
+    private(set) var selectedKeys = U.shared.get(C.mbtiKey, C.defaultKey)
     
     override func configureHierarchy() {
-        addView(MBTILabel)
-        addView(MBTIStackView)
-        MBTIStackView.addArrangedSubview(ESTJStackView)
-        MBTIStackView.addArrangedSubview(INFPStackView)
+        addView(mbtiLabel)
+        addView(mbtiStackView)
+        mbtiStackView.addArrangedSubview(estjStackView)
+        mbtiStackView.addArrangedSubview(infpStackView)
     }
     
     override func configureLayout() {
-        MBTILabel.snp.makeConstraints { make in
+        mbtiLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview()
             make.width.equalToSuperview().dividedBy(3)
         }
         
-        MBTIStackView.snp.makeConstraints { make in
-            make.leading.equalTo(MBTILabel.snp.trailing)
+        mbtiStackView.snp.makeConstraints { make in
+            make.leading.equalTo(mbtiLabel.snp.trailing)
             make.top.trailing.equalToSuperview()
         }
     }
     
     override func configureView() {
-        MBTILabel.configureData(C.MBTITitle)
-        MBTILabel.textAlignment = .left
+        mbtiLabel.configureData(C.MBTITitle)
+        mbtiLabel.textAlignment = .left
         
-        configureStackView(.vertical, MBTIStackView)
-        configureStackView(.horizontal, ESTJStackView)
-        configureStackView(.horizontal, INFPStackView)
+        configureStackView(.vertical, mbtiStackView)
+        configureStackView(.horizontal, estjStackView)
+        configureStackView(.horizontal, infpStackView)
         
         configureSubview()
     }
@@ -51,15 +55,30 @@ class MBTIView: BaseView {
     }
     
     private func configureSubview() {
-        let subviews = [ESTJStackView, INFPStackView]
-        let selectedKeys = U.shared.get(C.mbtiKey, C.defaultKey)
-        
+        let subviews = [estjStackView, infpStackView]
+
         for (i, mbti) in C.MBTIs.enumerated() {
             for (j, key) in mbti.enumerated() {
-                let button = MBTIButton()
-                button.configureButton(String(key), j, selectedKeys[i][j])
+                let button = configureButton(String(key), i, j)
                 subviews[i].addArrangedSubview(button)
+                buttons[i].append(button)
             }
         }
+    }
+    
+    private func configureButton(_ key: String, _ row: Int, _ column: Int) -> MBTIButton {
+        let section = row == 0 ? 1 : 0
+        let button = MBTIButton()
+        
+        button.configureButton(key, selectedKeys[row][column])
+        button.keys = { [weak self] key in
+            self?.selectedKeys[row][column] = key
+            if key {
+                self?.selectedKeys[section][column] = false
+                self?.buttons[section][column].button.isSelected = false
+            }
+        }
+        
+        return button
     }
 }

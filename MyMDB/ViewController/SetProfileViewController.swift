@@ -18,6 +18,7 @@ final class SetProfileViewController: BaseViewController {
     
     private var hasInvalidLength = false
     private var hasInvalidCharacter = false
+    private var hasInvalidMBTI = false
     private var hasNumber = false
     private var result = false
 
@@ -140,6 +141,7 @@ final class SetProfileViewController: BaseViewController {
     private func save() {
         U.shared.set(profileView.getImageName(), C.profileImageKey)
         U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
+        U.shared.set(mbtiView.selectedKeys, C.mbtiKey)
         if !isEdit {
             U.shared.set(Date().dateToString(), C.dateKey)
         }
