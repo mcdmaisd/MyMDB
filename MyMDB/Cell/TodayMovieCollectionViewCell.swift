@@ -45,14 +45,15 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         }
         
         posterImageView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
+            make.top.equalToSuperview().inset(10)
+            make.horizontalEdges.equalToSuperview()
             make.bottom.equalTo(likeButton.snp.top).offset(-5)
         }
     }
     
     override func configureView() {
         posterImageView.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
-        
+
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
 

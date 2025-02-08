@@ -16,7 +16,7 @@ final class MainViewController: BaseViewController {
     private let stackView = UIStackView()
     private let todayMovie = HeaderLabel()
     
-    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10, 0.6)
+    private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     private var keywords = U.shared.get(C.searchHistoryKey, [String]()) {
@@ -116,6 +116,11 @@ final class MainViewController: BaseViewController {
         NotificationCenter
             .default
             .addObserver(self, selector:#selector(reloadButton), name: .name, object: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        remakeFlowlayout(collectionView, widthRatio: 0.6)
     }
     
     private func hideView(_ empty: Bool) {
