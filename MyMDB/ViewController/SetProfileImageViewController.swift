@@ -8,11 +8,10 @@
 import UIKit
 
 final class SetProfileImageViewController: BaseViewController {
-    var image: String?
-    var contents: ((String) -> Void)?
+    var viewModel = SetProfileImageViewModel()
     
-    private lazy var profileView = ProfileContainerView(name: image ?? "")
-    private lazy var selectedIndex = Int(image?.filter { $0.isNumber } ?? "") ?? 0
+    private lazy var profileView = ProfileContainerView(name: viewModel.image.value ?? "")
+    private lazy var selectedIndex = viewModel.selectedIndex
     private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
@@ -37,6 +36,17 @@ final class SetProfileImageViewController: BaseViewController {
         configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         initCollectionView()
+        binding()
+    }
+    
+    private func binding() {
+        viewModel.image.lazyBind { [weak self] name in
+            self?.profileView.configureData(name ?? "")
+        }
+        
+        viewModel.collectionViewReload.bind { [weak self] _ in
+            self?.collectionView.reloadData()
+        }
     }
     
     private func initCollectionView() {
@@ -46,15 +56,10 @@ final class SetProfileImageViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.id)
     }
-    
-    private func makeImageName() -> String {
-        "\(C.profileImagePrefix)\(selectedIndex)"
-    }
-    
+        
     @objc
     override func back() {
         super.back()
-        contents?(makeImageName())
     }
 }
 
@@ -67,7 +72,7 @@ extension SetProfileImageViewController: UICollectionViewDelegate, UICollectionV
         let tag = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.id, for: indexPath) as! ProfileImageCollectionViewCell
         
-        cell.configureData(tag, selectedIndex)
+        cell.configureData(tag, viewModel.selectedIndex)
         
         return cell
     }
@@ -75,12 +80,6 @@ extension SetProfileImageViewController: UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         let row = indexPath.row
-        
-        if selectedIndex == row { return }
-        
-        selectedIndex = row
-        profileView.configureData(makeImageName())
-        
-        collectionView.reloadData()
+        viewModel.imageCell.value = row
     }
 }

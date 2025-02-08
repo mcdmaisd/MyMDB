@@ -20,32 +20,20 @@ extension UIViewController: SendTouchEvent {
         window.makeKeyAndVisible()
     }
     
-    func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat, _ widthRatio: CGFloat = 1, _ heightRatio: CGFloat = 1) -> UICollectionViewFlowLayout {
+    func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat, _ widthRatio: CGFloat = 1, _ heightRatio: CGFloat = 1, ratio: CGFloat = 1) -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
-        let screenWidth = UIApplication.shared.getCurrentScene().bounds.width
+        let screenWidth = UIApplication.shared.getCurrentScene().bounds.width * ratio
         let itemWidth = (screenWidth - (itemCount + 1) * inset) / itemCount
         
         layout.scrollDirection = direction
         layout.itemSize = CGSize(width: itemWidth * widthRatio, height: itemWidth * heightRatio)
         layout.minimumLineSpacing = inset
         layout.minimumInteritemSpacing = inset
-        layout.sectionInset = UIEdgeInsets(top: inset, left: 0, bottom: inset, right: inset)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: inset, bottom: inset, right: inset)
         
         return layout
     }
     
-    func remakeFlowlayout(_ cv: UICollectionView, widthRatio: CGFloat = 1, heightRatio: CGFloat = 1) {
-        guard let cell = cv.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-        
-        let cellWidth = cv.frame.width * widthRatio
-        let cellHeight = cv.frame.height * heightRatio
-
-        if cell.itemSize.width == cellWidth && cell.itemSize.height == cellHeight { return }
-        
-        cell.itemSize = CGSize(width: cellWidth, height: cellHeight)
-        cell.invalidateLayout()
-    }
-        
     func presentAlert(_ title: String? = nil, _ message: String, _ delete: Bool = false) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         

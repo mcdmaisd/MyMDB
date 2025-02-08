@@ -118,6 +118,7 @@ struct Constants {
     static let queueLabel = "monitor"
     static let MBTITitle = "MBTI"
     static let MBTIs = ["ESTJ", "INFP"]
-    static let defaultKey = [[Bool]](repeating: Array(repeating: false, count: 4), count: 2)
+    static let MBTIKey = ["E", "S", "T", "J", "I", "N ", "F", "P"]
+    static let defaultKey = [Bool](repeating: false, count: 8)
 
 }

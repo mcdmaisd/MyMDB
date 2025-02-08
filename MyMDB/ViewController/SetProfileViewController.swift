@@ -8,29 +8,32 @@
 import UIKit
 
 final class SetProfileViewController: BaseViewController {
+    private let viewModel = SetProfileViewModel()
     private let nicknameTextField = UITextField()
     private let underlineView = UIView()
     private let statusLabel = UILabel()
-    private let mbtiView = MBTIView()
     private let registerButton = CustomButton(title: C.completion)
     private let isEdit = U.shared.get(C.firstKey, false)
-    private let imageName = U.shared.get(C.profileImageKey, C.randomProfileImage)
-    
+    private let mbtiHeader = HeaderLabel()
+
     private var hasInvalidLength = false
     private var hasInvalidCharacter = false
     private var hasInvalidMBTI = false
     private var hasNumber = false
     private var result = false
 
-    private lazy var profileView = ProfileContainerView(name: imageName)
+    private lazy var profileView = ProfileContainerView(name: viewModel.profileImage.value)
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+    private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5, ratio: 0.6)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
     override func configureHierarchy() {
         addSubView(profileView)
         addSubView(nicknameTextField)
         addSubView(underlineView)
         addSubView(statusLabel)
-        addSubView(mbtiView)
+        addSubView(mbtiHeader)
+        addSubView(collectionView)
         addSubView(registerButton)
     }
     
@@ -53,9 +56,16 @@ final class SetProfileViewController: BaseViewController {
             make.horizontalEdges.equalTo(nicknameTextField)
         }
         
-        mbtiView.snp.makeConstraints { make in
+        mbtiHeader.snp.makeConstraints { make in
             make.top.equalTo(statusLabel.snp.bottom).offset(20)
-            make.horizontalEdges.equalTo(underlineView)
+            make.leading.equalTo(underlineView)
+            make.width.equalTo(underlineView).dividedBy(3)
+        }
+        
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(mbtiHeader)
+            make.leading.equalTo(mbtiHeader.snp.trailing)
+            make.trailing.equalTo(underlineView)
             make.bottom.equalTo(registerButton.snp.top)
         }
         
@@ -82,6 +92,9 @@ final class SetProfileViewController: BaseViewController {
         statusLabel.textColor = .customTheme
         statusLabel.numberOfLines = 0
         
+        mbtiHeader.textAlignment = .left
+        mbtiHeader.configureData(C.MBTITitle)
+        
         registerButton.isHidden = true
         registerButton.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
     }
@@ -100,13 +113,32 @@ final class SetProfileViewController: BaseViewController {
         configureLeftBarButtonItem(self)
         configureToolbar(nicknameTextField)
         configureData()
+        initCollectionView()
         verifyNickname(nicknameTextField)
+        binding()
 
         if isEdit {
             configureRightBarButtonItem(self, C.save)
             navigationItem.leftBarButtonItem?.action = #selector(dismissVC)
             navigationItem.leftBarButtonItem?.image = UIImage(systemName: C.xmark)
         }
+    }
+    
+    private func binding() {
+        viewModel.profileImage.bind { [weak self] name in
+            self?.profileView.configureData(name)
+        }
+        
+        viewModel.collectionViewReload.bind { [weak self] _ in
+            self?.collectionView.reloadData()
+        }
+    }
+    
+    private func initCollectionView() {
+        collectionView.backgroundColor = .clear
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: MbtiCollectionViewCell.id)
     }
         
     private func configureData() {
@@ -141,7 +173,6 @@ final class SetProfileViewController: BaseViewController {
     private func save() {
         U.shared.set(profileView.getImageName(), C.profileImageKey)
         U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
-        U.shared.set(mbtiView.selectedKeys, C.mbtiKey)
         if !isEdit {
             U.shared.set(Date().dateToString(), C.dateKey)
         }
@@ -175,12 +206,30 @@ final class SetProfileViewController: BaseViewController {
     private func imageTapped() {
         let vc = SetProfileImageViewController()
         
-        vc.image = profileView.getImageName()
-        vc.contents = { data in
-            self.profileView.configureData(data)
+        vc.viewModel.image.value = profileView.getImageName()
+        vc.viewModel.contents = { data in
+            self.viewModel.profileImageInput.value = data
         }
         
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
+extension SetProfileViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        C.MBTIKey.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let row = indexPath.row
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MbtiCollectionViewCell.id, for: indexPath) as! MbtiCollectionViewCell
+        
+        cell.configureLabel(C.MBTIKey[row], viewModel.mbti[row])
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.mbtiInput.value = indexPath.row
+    }
+}

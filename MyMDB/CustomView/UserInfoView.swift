@@ -58,6 +58,8 @@ final class UserInfoView: BaseView {
         
         configureUpperView()
         configureMyMovieButton()
+        
+        myMovieButton.isUserInteractionEnabled = false
     }
     
     private func configureUpperView() {

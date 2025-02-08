@@ -80,8 +80,8 @@ final class MainViewController: BaseViewController {
         }
         
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(todayMovie.snp.bottom).offset(5)
-            make.leading.equalTo(todayMovie)
+            make.top.equalTo(todayMovie.snp.bottom)
+            make.leading.equalToSuperview()
             make.bottom.trailing.equalTo(view.safeAreaLayoutGuide)
         }
     }
