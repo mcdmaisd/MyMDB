@@ -15,11 +15,12 @@ extension UILabel {
             attributedText = title.changeColor(target)
         }
     }
-    
-    func configureLabel(_ title: String, _ line: Int, _ color: UIColor, _ target: String, _ fontSize: CGFloat) {
-        textColor = color
+
+    func configureLabel(_ title: String, _ line: Int, _ target: String, _ fontSize: CGFloat, _ isBold: Bool = false) {
+        let fontStyle: UIFont = isBold ? .boldSystemFont(ofSize: fontSize) : .systemFont(ofSize: fontSize)
+        textColor = .customWhite
         numberOfLines = line
-        font = .systemFont(ofSize: fontSize)
+        font = fontStyle
         setText(title, target)
     }
 }

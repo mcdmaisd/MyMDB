@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct APIConstants {
+struct APIConstants {
     private init() { }
     //MARK: genreDictionary
     static let genreDictionary: [Int: String] = [
@@ -60,7 +60,7 @@ public struct APIConstants {
     static let headerKey = "Authorization"
     static let headerValuePrefix = "Bearer "
     //MARK: error message
-    static let mergeFailed = ""
+    static let mergeFailed = "Merging failed"
     static let badRequest = "The input is not valid."
     static let invalidToken = "Invalid token."
     static let forbidden = "This user has been suspended."

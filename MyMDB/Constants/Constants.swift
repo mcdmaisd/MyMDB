@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Constants {
+struct Constants {
     private init() { }
     
     static let sizeXs: CGFloat = 12
@@ -20,6 +20,7 @@ public struct Constants {
     static let selectedBorderWidth: CGFloat = 3
     static let unselectedAlpha: CGFloat = 0.5
     static let selectedAlpha: CGFloat = 1
+    static let stackViewSpacing: CGFloat = 5
     static let cornerRadius: CGFloat = 10
     static let tableViewCellInset: CGFloat = 20
     static let tableViewCellHeight: CGFloat = 40
@@ -81,6 +82,7 @@ public struct Constants {
     static let movieCountKey = "movieCount"
     static let searchHistoryKey = "searchHistory"
     static let dateKey = "date"
+    static let mbtiKey = "mbti"
     
     static let alertTitle = "탈퇴하기"
     static let alertMessage = "탈퇴를 하면 데이터가 모두 초기화됩니다. 탈퇴 하시겠습니까?"
@@ -114,4 +116,8 @@ public struct Constants {
     static let noInfo = "정보 없음"
     static let likeButtonMessages = [true: "영화가 무비박스에 보관되었습니다.", false: "영화가 무비박스에서 삭제되었습니다."]
     static let queueLabel = "monitor"
+    static let MBTITitle = "MBTI"
+    static let MBTIs = ["ESTJ", "INFP"]
+    static let defaultKey = [[Bool]](repeating: Array(repeating: false, count: 4), count: 2)
+
 }

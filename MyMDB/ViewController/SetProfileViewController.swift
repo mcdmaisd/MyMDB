@@ -11,6 +11,7 @@ final class SetProfileViewController: BaseViewController {
     private let nicknameTextField = UITextField()
     private let underlineView = UIView()
     private let statusLabel = UILabel()
+    private let mbtiView = MBTIView()
     private let registerButton = CustomButton(title: C.completion)
     private let isEdit = U.shared.get(C.firstKey, false)
     private let imageName = U.shared.get(C.profileImageKey, C.randomProfileImage)
@@ -28,6 +29,7 @@ final class SetProfileViewController: BaseViewController {
         addSubView(nicknameTextField)
         addSubView(underlineView)
         addSubView(statusLabel)
+        addSubView(mbtiView)
         addSubView(registerButton)
     }
     
@@ -50,9 +52,15 @@ final class SetProfileViewController: BaseViewController {
             make.horizontalEdges.equalTo(nicknameTextField)
         }
         
-        registerButton.snp.makeConstraints { make in
+        mbtiView.snp.makeConstraints { make in
             make.top.equalTo(statusLabel.snp.bottom).offset(20)
+            make.horizontalEdges.equalTo(underlineView)
+            make.bottom.equalTo(registerButton.snp.top)
+        }
+        
+        registerButton.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(nicknameTextField)
+            make.bottom.equalToSuperview().inset(10)
         }
     }
     

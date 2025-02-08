@@ -84,7 +84,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         likeButton.setContentCompressionResistancePriority(.required, for: .vertical)
         
         stackView.axis = .horizontal
-        stackView.spacing = 5
+        stackView.spacing = C.stackViewSpacing
         stackView.distribution = .fillProportionally
     }
     

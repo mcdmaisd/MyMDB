@@ -99,7 +99,7 @@ final class MainViewController: BaseViewController {
         
         scrollView.showsHorizontalScrollIndicator = false
         
-        stackView.spacing = 5
+        stackView.spacing = C.stackViewSpacing
         stackView.distribution = .fillProportionally
         stackView.axis = .horizontal
         
