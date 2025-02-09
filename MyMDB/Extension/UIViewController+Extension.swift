@@ -14,7 +14,7 @@ extension UIViewController: SendTouchEvent {
         let onBoarding = UINavigationController(rootViewController: OnboardingViewController())
         let vc = isNotFirst ? onBoarding : TabBarController()
         
-        UserDefaults.standard.set(!isNotFirst, forKey: C.firstKey)
+        U.shared.set(!isNotFirst, C.firstKey)
         
         window.rootViewController = vc
         window.makeKeyAndVisible()

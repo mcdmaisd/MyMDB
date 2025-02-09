@@ -31,8 +31,7 @@ final class SetProfileImageViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let isEdit = U.shared.get(C.firstKey, false)
-        let title = isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
+        let title = viewModel.isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
         configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         initCollectionView()

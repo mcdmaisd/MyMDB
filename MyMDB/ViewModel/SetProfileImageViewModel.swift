@@ -10,12 +10,12 @@ import Foundation
 class SetProfileImageViewModel {
     let image: Observable<String?> = .init(nil)
     let imageCell: Observable<Int?> = .init(nil)
-    
     let collectionViewReload: Observable<Void> = .init(())
+    let isEdit = U.shared.get(C.firstKey, false)
 
     var contents: ((String) -> Void)?
     var selectedIndex = 0
-    
+
     init() {
         image.bind { [weak self] name in
             self?.selectedIndex = Int(name?.filter { $0.isNumber } ?? "") ?? 0

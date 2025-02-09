@@ -16,12 +16,6 @@ final class SetProfileViewController: BaseViewController {
     private let isEdit = U.shared.get(C.firstKey, false)
     private let mbtiHeader = HeaderLabel()
 
-    private var hasInvalidLength = false
-    private var hasInvalidCharacter = false
-    private var hasInvalidMBTI = false
-    private var hasNumber = false
-    private var result = false
-
     private lazy var profileView = ProfileContainerView(name: viewModel.profileImage.value)
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
     private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5, ratio: 0.6)
@@ -80,6 +74,7 @@ final class SetProfileViewController: BaseViewController {
         profileView.addGestureRecognizer(tapGestureRecognizer)
         
         nicknameTextField.font = .systemFont(ofSize: C.sizeLg)
+        nicknameTextField.text = viewModel.nickname.value
         nicknameTextField.textColor = .customWhite
         nicknameTextField.borderStyle = .none
         nicknameTextField.addTarget(self, action: #selector(verifyNickname), for: .editingChanged)
@@ -99,7 +94,7 @@ final class SetProfileViewController: BaseViewController {
     }
         
     override func rightBarButtonTapped() {
-        save()
+        viewModel.dateInput.value = ()
         dismissVC()
         view.postNotification(C.userInfoChanged , true)
     }
@@ -111,12 +106,11 @@ final class SetProfileViewController: BaseViewController {
         configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         configureToolbar(nicknameTextField)
-        configureData()
         initCollectionView()
         verifyNickname(nicknameTextField)
         binding()
 
-        if isEdit {
+        if viewModel.isEdit {
             configureRightBarButtonItem(self, C.save)
             registerButton.isHidden = true
             navigationItem.leftBarButtonItem?.action = #selector(dismissVC)
@@ -125,19 +119,35 @@ final class SetProfileViewController: BaseViewController {
     }
     
     private func binding() {
-        viewModel.profileImage.bind { [weak self] name in
+        viewModel.profileImage.lazyBind { [weak self] name in
             self?.profileView.configureData(name)
+        }
+        
+        viewModel.nickname.lazyBind { [weak self] nickname in
+            self?.nicknameTextField.text = nickname
+        }
+                
+        viewModel.nicknameValidationMessage.bind { [weak self] result in
+            self?.setStatusMessage(result)
         }
         
         viewModel.collectionViewReload.bind { [weak self] _ in
             self?.collectionView.reloadData()
         }
+        
+        viewModel.saveButton.bind { [weak self] status in
+            self?.changeButtonStatus(status)
+        }
+        
+        viewModel.changeRootView.lazyBind { [weak self] _ in
+            self?.changeRootView()
+        }
     }
     
-    private func changeButtonStatus() {
+    private func changeButtonStatus(_ result: Bool) {
         let color: UIColor = result ? .validButton : .invalidButton
         
-        if isEdit {
+        if viewModel.isEdit {
             navigationItem.rightBarButtonItem?.isEnabled = result
         } else {
             registerButton.configuration?.baseBackgroundColor = color
@@ -151,42 +161,10 @@ final class SetProfileViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.register(MbtiCollectionViewCell.self, forCellWithReuseIdentifier: MbtiCollectionViewCell.id)
     }
-        
-    private func configureData() {
-        nicknameTextField.text = U.shared.get(C.nickNameKey, nil)
-    }
     
-    private func hideButton() {
-        if isEdit {
-            navigationItem.rightBarButtonItem?.isHidden = !result
-        } else {
-            registerButton.isHidden = !result
-        }
-    }
-    
-    private func setStatusMessage() {
-        var errorMessage: [String?] = []
-        
-        if hasInvalidLength {
-            errorMessage.append(C.invalidLength)
-        } else {
-            errorMessage = [
-                hasInvalidCharacter ? C.invalidCharacter : nil,
-                hasNumber ? C.invalidNumber: nil,
-                result ? C.validNickname: nil
-            ]
-        }
-        
-        statusLabel.textColor = result ? .validNickname : .invalidNickname
-        statusLabel.text = errorMessage.compactMap { $0 }.joined(separator: C.newline)
-    }
-    
-    private func save() {
-        U.shared.set(profileView.getImageName(), C.profileImageKey)
-        U.shared.set(nicknameTextField.text ?? "", C.nickNameKey)
-        if !isEdit {
-            U.shared.set(Date().dateToString(), C.dateKey)
-        }
+    private func setStatusMessage(_ message: String) {
+        statusLabel.textColor = viewModel.result ? .validNickname : .invalidNickname
+        statusLabel.text = message
     }
     
     @objc
@@ -196,8 +174,7 @@ final class SetProfileViewController: BaseViewController {
     
     @objc
     private func registerButtonTapped() {
-        save()
-        changeRootView()
+        viewModel.dateInput.value = ()
     }
     
     @objc
