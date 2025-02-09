@@ -17,16 +17,14 @@ final class CustomButton: UIButton {
     }
     
     private func configureButton() {
-        var config = UIButton.Configuration.plain()
+        var config = UIButton.Configuration.filled()
         var titleContainer = AttributeContainer()
         titleContainer.font = UIFont.boldSystemFont(ofSize: C.sizeLg)
 
         config.buttonSize = .large
         config.cornerStyle = .capsule
         config.attributedTitle = AttributedString(title, attributes: titleContainer)
-        config.background.strokeColor = .customTheme
-        config.baseForegroundColor = .customTheme
-        config.baseBackgroundColor = .clear
+        config.baseForegroundColor = .customWhite
 
         self.configuration = config
     }

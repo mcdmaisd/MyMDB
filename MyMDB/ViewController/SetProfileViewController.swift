@@ -95,7 +95,6 @@ final class SetProfileViewController: BaseViewController {
         mbtiHeader.textAlignment = .left
         mbtiHeader.configureData(C.MBTITitle)
         
-        registerButton.isHidden = true
         registerButton.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
     }
         
@@ -119,6 +118,7 @@ final class SetProfileViewController: BaseViewController {
 
         if isEdit {
             configureRightBarButtonItem(self, C.save)
+            registerButton.isHidden = true
             navigationItem.leftBarButtonItem?.action = #selector(dismissVC)
             navigationItem.leftBarButtonItem?.image = UIImage(systemName: C.xmark)
         }
@@ -131,6 +131,17 @@ final class SetProfileViewController: BaseViewController {
         
         viewModel.collectionViewReload.bind { [weak self] _ in
             self?.collectionView.reloadData()
+        }
+    }
+    
+    private func changeButtonStatus() {
+        let color: UIColor = result ? .validButton : .invalidButton
+        
+        if isEdit {
+            navigationItem.rightBarButtonItem?.isEnabled = result
+        } else {
+            registerButton.configuration?.baseBackgroundColor = color
+            registerButton.isUserInteractionEnabled = result
         }
     }
     
@@ -166,7 +177,7 @@ final class SetProfileViewController: BaseViewController {
             ]
         }
         
-        statusLabel.textColor = result ? .customTheme : .systemPink
+        statusLabel.textColor = result ? .validNickname : .invalidNickname
         statusLabel.text = errorMessage.compactMap { $0 }.joined(separator: C.newline)
     }
     
@@ -180,20 +191,7 @@ final class SetProfileViewController: BaseViewController {
     
     @objc
     private func verifyNickname(_ sender: UITextField) {
-        guard let text = sender.text?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-        nicknameTextField.text = text
-        if text.isEmpty {
-            statusLabel.text?.removeAll()
-            return
-        }
-        
-        hasInvalidLength = text.count < 2 || text.count >= 10
-        hasInvalidCharacter = !text.filter(C.invalidCharacterSet.contains).isEmpty
-        hasNumber = !text.filter { $0.isNumber }.isEmpty
-        result = !hasInvalidLength && !hasInvalidCharacter && !hasNumber
-
-        hideButton()
-        setStatusMessage()
+        viewModel.nicknameInput.value = sender.text ?? ""
     }
     
     @objc
