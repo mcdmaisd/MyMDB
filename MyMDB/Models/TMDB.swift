@@ -6,13 +6,13 @@
 //
 
 import Foundation
-
-struct Movies: Codable {
-    let results: [Results]
+//MARK: Search, Trend API
+struct SearchAndTrendingResponse: Decodable {
+    let results: [MovieInfo]
     let total_pages: Int
 }
 
-struct Results: Codable {
+struct MovieInfo: Decodable {
     let id: Int
     let title: String
     let overview: String
@@ -21,22 +21,22 @@ struct Results: Codable {
     let vote_average: Double?
     let genre_ids: [Int]?
 }
-
-struct Images: Codable {
+//MARK: Image API
+struct ImageResponse: Decodable {
     let backdrops: [ImageInfo]
     let posters: [ImageInfo]
 }
 
-struct ImageInfo: Codable {
+struct ImageInfo: Decodable {
     let aspect_ratio: Double
     let file_path: String
 }
-
-struct Cast: Codable {
+//MARK: Credit API
+struct CreditResponse: Decodable {
     let cast: [CastInfo]
 }
 
-struct CastInfo: Codable {
+struct CastInfo: Decodable {
     let original_name: String?
     let profile_path: String?
     let character: String?
