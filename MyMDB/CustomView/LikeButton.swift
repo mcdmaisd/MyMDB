@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class LikeButton: BaseView {
+final class LikeButton: BaseView, SendNotification {
     private let button = UIButton()
         
     override func configureHierarchy() {
@@ -57,6 +57,12 @@ final class LikeButton: BaseView {
         presentToast(C.likeButtonMessages[button.isSelected] ?? "")
         U.shared.set(list, C.movieCountKey)
         postNotification(C.userInfoChanged, false, tag)
+    }
+    
+    func postNotification(_ name: String, _ value: Bool, _ id: Int?) {
+        NotificationCenter.default.post(
+            name: NSNotification.Name(name), object: id, userInfo: [C.userInfoKey: value]
+        )
     }
         
     @objc

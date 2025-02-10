@@ -7,12 +7,12 @@
 
 import Foundation
 //MARK: Search, Trend API
-struct SearchAndTrendingResponse: Decodable {
-    let results: [MovieInfo]
+struct TMDBSearchAndTrendingResponse: Decodable {
+    let results: [TMDBMovieInfo]
     let total_pages: Int
 }
 
-struct MovieInfo: Decodable {
+struct TMDBMovieInfo: Decodable {
     let id: Int
     let title: String
     let overview: String
@@ -22,21 +22,21 @@ struct MovieInfo: Decodable {
     let genre_ids: [Int]?
 }
 //MARK: Image API
-struct ImageResponse: Decodable {
-    let backdrops: [ImageInfo]
-    let posters: [ImageInfo]
+struct TMDBImageResponse: Decodable {
+    let backdrops: [TMDBImageInfo]
+    let posters: [TMDBImageInfo]
 }
 
-struct ImageInfo: Decodable {
+struct TMDBImageInfo: Decodable {
     let aspect_ratio: Double
     let file_path: String
 }
 //MARK: Credit API
-struct CreditResponse: Decodable {
-    let cast: [CastInfo]
+struct TMDBCreditResponse: Decodable {
+    let cast: [TMDBCastInfo]
 }
 
-struct CastInfo: Decodable {
+struct TMDBCastInfo: Decodable {
     let original_name: String?
     let profile_path: String?
     let character: String?

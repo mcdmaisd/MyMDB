@@ -17,7 +17,7 @@ final class SearchViewController: BaseViewController {
     var totalPage: Int?
     var movieTitle: String?
     var keyword: ((String) -> Void)?
-    var searchResults: [Results] = [] {
+    var searchResults: [TMDBMovieInfo] = [] {
         didSet {
             applyResult(searchResults.isEmpty)
         }
@@ -95,7 +95,7 @@ final class SearchViewController: BaseViewController {
     private func search(_ keyword: String, completionHandler: @escaping () -> Void) {
         let request = APIRouter.search(keyword: keyword, page: page)
         
-        APIManager.shared.requestAPI(request, self) { [self] (data: SearchAndTrendingResponse) in
+        APIManager.shared.requestAPI(request, self) { [self] (data: TMDBSearchAndTrendingResponse) in
             let result = data.results.filter { $0.genre_ids != nil }
             
             if page == 1 {

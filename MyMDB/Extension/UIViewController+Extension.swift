@@ -137,13 +137,13 @@ extension UIViewController: SendTouchEvent {
         present(vc, animated: true, completion: nil)
     }
     
-    func checkDuplication(_ data: [Results]) {
+    func checkDuplication(_ data: [TMDBMovieInfo]) {
         let list = data.map { $0.id }
         let setList = Set(list)
         print("result:", list.count == setList.count, "list count: \(list.count), set count: \(setList.count)")
     }
     
-    func moveToDetailVC(_ from: UIViewController, _ data: Results) {
+    func moveToDetailVC(_ from: UIViewController, _ data: TMDBMovieInfo) {
         let vc = MovieDetailViewController()
         vc.result = data
         from.navigationController?.pushViewController(vc, animated: true)

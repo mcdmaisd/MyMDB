@@ -14,7 +14,7 @@ extension UITableViewCell {
         
     func flowLayout(direction: UICollectionView.ScrollDirection, itemCount: CGFloat, inset: CGFloat) -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
-        let screenWidth = UIScreen.main.bounds.width
+        let screenWidth = UIApplication.shared.getCurrentScene().bounds.width
         let itemWidth = (screenWidth - (itemCount + 1) * inset) / itemCount
         
         layout.scrollDirection = direction

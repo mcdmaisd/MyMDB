@@ -7,22 +7,39 @@
 
 import Foundation
 
-class SetProfileImageViewModel {
-    let image: Observable<String?> = .init(nil)
-    let imageCell: Observable<Int?> = .init(nil)
-    let collectionViewReload: Observable<Void> = .init(())
+class SetProfileImageViewModel: BaseViewModel {
+    var input: Input
+    var output: Output
+    
+    struct Input {
+        let imageName = Observable("")
+        let imageIndex = Observable(0)
+    }
+    
+    struct Output {
+        let selectedImage = Observable("")
+        let collectionViewReload: Observable<Void> = .init(())
+    }
+    
     let isEdit = U.shared.get(C.firstKey, false)
 
     var contents: ((String) -> Void)?
-    var selectedIndex = 0
+    
+    private(set) var selectedIndex = 0
 
     init() {
-        image.bind { [weak self] name in
-            self?.selectedIndex = Int(name?.filter { $0.isNumber } ?? "") ?? 0
+        input = Input()
+        output = Output()
+        
+        transform()
+    }
+    
+    func transform() {
+        input.imageName.bind { [weak self] name in
+            self?.input.imageIndex.value = Int(name.filter { $0.isNumber }) ?? 0
         }
         
-        imageCell.bind { [weak self] index in
-            guard let index else { return }
+        input.imageIndex.lazyBind { [weak self] index in
             self?.changeImage(index)
         }
     }
@@ -30,9 +47,9 @@ class SetProfileImageViewModel {
     private func changeImage(_ index: Int) {
         if selectedIndex == index { return }
         selectedIndex = index
-        image.value = makeImageName()
+        output.selectedImage.value = makeImageName()
         contents?(makeImageName())
-        collectionViewReload.value = ()
+        output.collectionViewReload.value = ()
     }
     
     private func makeImageName() -> String {

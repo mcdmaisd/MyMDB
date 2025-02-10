@@ -127,7 +127,7 @@ final class SearchResultTableViewCell: BaseTableViewCell {
         }
     }
     
-    func configureData(_ data: Results, _ keyword: String = "") {
+    func configureData(_ data: TMDBMovieInfo, _ keyword: String = "") {
         posterView.configureImageView(data.poster_path ?? "")
         titleLabel.configureData(data.title, 2, keyword)
         dateLabel.configureLabel(data.release_date?.replacingOccurrences(of: AC.dash, with: AC.period) ?? "")

@@ -10,8 +10,7 @@ import UIKit
 final class SetProfileImageViewController: BaseViewController {
     var viewModel = SetProfileImageViewModel()
     
-    private lazy var profileView = ProfileContainerView(name: viewModel.image.value ?? "")
-    private lazy var selectedIndex = viewModel.selectedIndex
+    private let profileView = ProfileContainerView()
     private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
     
@@ -21,7 +20,12 @@ final class SetProfileImageViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        profileView.setProfileConstraint(self)
+        profileView.snp.makeConstraints { make in
+            make.width.equalTo(view.safeAreaLayoutGuide).dividedBy(4)
+            make.height.equalTo(profileView.snp.width)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+        }
         
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(profileView.snp.bottom).offset(20)
@@ -39,11 +43,11 @@ final class SetProfileImageViewController: BaseViewController {
     }
     
     private func binding() {
-        viewModel.image.lazyBind { [weak self] name in
-            self?.profileView.configureData(name ?? "")
+        viewModel.output.selectedImage.bind { [weak self] name in
+            self?.profileView.configureData(name)
         }
         
-        viewModel.collectionViewReload.bind { [weak self] _ in
+        viewModel.output.collectionViewReload.lazyBind { [weak self] _ in
             self?.collectionView.reloadData()
         }
     }
@@ -79,6 +83,6 @@ extension SetProfileImageViewController: UICollectionViewDelegate, UICollectionV
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         let row = indexPath.row
-        viewModel.imageCell.value = row
+        viewModel.input.imageIndex.value = row
     }
 }

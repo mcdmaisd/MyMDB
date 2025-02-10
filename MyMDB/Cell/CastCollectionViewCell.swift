@@ -55,7 +55,7 @@ final class CastCollectionViewCell: BaseCollectionViewCell {
         characterLabel.configureLabel()
     }
     
-    func configureData(_ data: CastInfo) {
+    func configureData(_ data: TMDBCastInfo) {
         profileImage.configureImage(data.profile_path ?? "")
         nameLabel.configureData(data.original_name ?? "")
         characterLabel.configureLabel(data.character ?? "")

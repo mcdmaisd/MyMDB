@@ -71,7 +71,7 @@ final class TodayMovieCollectionViewCell: BaseCollectionViewCell {
         overviewLabel.configureData()
     }
         
-    func configureData(_ data: Results) {
+    func configureData(_ data: TMDBMovieInfo) {
         posterImageView.configureImageView(data.poster_path ?? "")
         titleLabel.configureData(data.title)
         likeButton.configureButton(data.id)

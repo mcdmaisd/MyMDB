@@ -18,7 +18,11 @@ final class ProfileViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        infoView.setInfoConstraint(self)
+        infoView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(10)
+            make.height.equalTo(infoView.snp.width).multipliedBy(0.3)
+        }
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(infoView.snp.bottom).offset(10)

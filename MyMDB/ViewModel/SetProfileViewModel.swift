@@ -7,19 +7,26 @@
 
 import Foundation
 
-class SetProfileViewModel {
-    //input
-    let profileImageInput: Observable<String?> = .init(nil)
-    let nicknameInput: Observable<String?> = .init(nil)
-    let dateInput = Observable(())
-    let mbtiInput: Observable<Int?> = .init(nil)
-    //output
-    let profileImage = Observable(U.shared.get(C.profileImageKey, C.randomProfileImage))
-    let nickname = Observable(U.shared.get(C.nickNameKey, ""))
-    let nicknameValidationMessage = Observable("")
-    let collectionViewReload = Observable(())
-    let changeRootView = Observable(())
-    let saveButton: Observable<Bool> = .init(false)
+class SetProfileViewModel: BaseViewModel, SendNotification {
+    var input: Input
+    var output: Output
+    
+    struct Input {
+        let profileImage = Observable(U.shared.get(C.profileImageKey, C.randomProfileImage))
+        let nickname = Observable(U.shared.get(C.nickNameKey, ""))
+        let date = Observable(())
+        let selectedMbti: Observable<Int?> = .init(nil)
+    }
+    
+    struct Output {
+        let profileImage = Observable("")
+        let nickname = Observable("")
+        let nicknameValidationMessage = Observable("")
+        let collectionViewReload = Observable(())
+        let changeRootView = Observable(())
+        let saveButton: Observable<Bool> = .init(false)
+    }
+        
     let isEdit = U.shared.get(C.firstKey, false)
     
     private(set) var mbti = U.shared.get(C.mbtiKey, C.defaultKey)
@@ -33,37 +40,49 @@ class SetProfileViewModel {
     private lazy var isValidMbti = mbti.filter { $0 == true }.count == 4
     
     init() {
-        profileImageInput.lazyBind { [weak self] name in
-            guard let name else { return }
-            self?.profileImage.value = name
+        input = Input()
+        output = Output()
+        
+        transform()
+    }
+    
+    func transform() {
+        input.profileImage.bind { [weak self] name in
+            self?.output.profileImage.value = name
         }
         
-        nicknameInput.lazyBind { [weak self] nickname in
-            self?.checkNickname()
+        input.nickname.bind { [weak self] nickname in
+            self?.checkNickname(nickname)
         }
         
-        mbtiInput.lazyBind { [weak self] index in
+        input.selectedMbti.bind { [weak self] index in
             guard let index else { return }
             self?.toggleKey(index)
         }
         
-        dateInput.lazyBind { [weak self] _ in
+        input.date.lazyBind { [weak self] _ in
             self?.save()
         }
     }
     
+    func postNotification(_ name: String, _ value: Bool, _ id: Int?) {
+        NotificationCenter.default.post(
+            name: NSNotification.Name(name), object: id, userInfo: [C.userInfoKey: value]
+        )
+    }
+    
     private func toggleKey(_ index: Int) {
-        guard let index = mbtiInput.value else { return }
+        guard let index = input.selectedMbti.value else { return }
         let pairIndex = index < 4 ? index + 4 : index - 4
         mbti[index].toggle()
         mbti[pairIndex] = false
         checkMbti()
-        collectionViewReload.value = ()
+        output.collectionViewReload.value = ()
     }
     
-    private func checkNickname() {
-        guard let text = nicknameInput.value?.trimmingCharacters(in: .whitespacesAndNewlines) else { return }
-        nickname.value = text
+    private func checkNickname(_ nickname: String) {
+        let text = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
+        output.nickname.value = text
         var errorMessage: [String?] = []
 
         hasInvalidLength = text.count < 2 || text.count >= 10
@@ -82,7 +101,7 @@ class SetProfileViewModel {
                 result ? C.validNickname: nil
             ]
         }
-        nicknameValidationMessage.value = errorMessage.compactMap { $0 }.joined(separator: C.newline)
+        output.nicknameValidationMessage.value = errorMessage.compactMap { $0 }.joined(separator: C.newline)
         isValidNickname = result
         configureSaveButtonStatus()
     }
@@ -93,16 +112,17 @@ class SetProfileViewModel {
     }
     
     private func configureSaveButtonStatus() {
-        saveButton.value = isValidNickname && isValidMbti
+        output.saveButton.value = isValidNickname && isValidMbti
     }
     
     private func save() {
-        U.shared.set(profileImage.value, C.profileImageKey)
-        U.shared.set(nicknameInput.value ?? "", C.nickNameKey)
+        U.shared.set(output.profileImage.value, C.profileImageKey)
+        U.shared.set(output.nickname.value, C.nickNameKey)
         U.shared.set(mbti, C.mbtiKey)
         if !isEdit {
             U.shared.set(Date().dateToString(), C.dateKey)
-            changeRootView.value = ()
+            output.changeRootView.value = ()
         }
+        postNotification(C.userInfoChanged ,true, nil)
     }
 }

@@ -32,7 +32,7 @@ final class BackdropCollectionViewCell: BaseCollectionViewCell {
         imageView.configureImageView()
     }
         
-    func configureData(_ data: ImageInfo? = nil) {
+    func configureData(_ data: TMDBImageInfo? = nil) {
         if let data {
             imageView.configureImageView(data.file_path, true)
         } else {

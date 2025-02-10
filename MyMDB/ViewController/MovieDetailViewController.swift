@@ -26,7 +26,7 @@ final class MovieDetailViewController: BaseViewController {
         }
     }
     
-    private var backdrops: [ImageInfo] = [] {
+    private var backdrops: [TMDBImageInfo] = [] {
         didSet {
             backdropCollectionView.reloadData()
         }
@@ -34,7 +34,7 @@ final class MovieDetailViewController: BaseViewController {
     
     private var data: [[Any]] = [[], []]
     
-    var result: Results?
+    var result: TMDBMovieInfo?
     
     override func configureHierarchy() {
         addSubView(scrollView)
@@ -179,13 +179,13 @@ final class MovieDetailViewController: BaseViewController {
         }
     }
     
-    private func makeImages(_ result: Results) {
+    private func makeImages(_ result: TMDBMovieInfo) {
         let imageRequest = APIRouter.image(id: result.id)
         let creditRequest = APIRouter.credit(id: result.id)
         let group = DispatchGroup()
         
         group.enter()
-        APIManager.shared.requestAPI(imageRequest, self) { (data: ImageResponse) in
+        APIManager.shared.requestAPI(imageRequest, self) { (data: TMDBImageResponse) in
             DispatchQueue.main.async {
                 let result = Array(data.backdrops.prefix(5))
                 self.data[1] = data.posters
@@ -197,7 +197,7 @@ final class MovieDetailViewController: BaseViewController {
         }
         
         group.enter()
-        APIManager.shared.requestAPI(creditRequest, self) { (data: CreditResponse) in
+        APIManager.shared.requestAPI(creditRequest, self) { (data: TMDBCreditResponse) in
             DispatchQueue.main.async {
                 self.data[0] = data.cast
                 group.leave()
@@ -215,7 +215,7 @@ final class MovieDetailViewController: BaseViewController {
         }
     }
     
-    private func configureNavigationBar(_ result: Results) {
+    private func configureNavigationBar(_ result: TMDBMovieInfo) {
         configureNavigationTitle(self, result.title)
         configureLeftBarButtonItem(self)
         configureRightBarButtonItem(self)
@@ -240,7 +240,6 @@ final class MovieDetailViewController: BaseViewController {
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // collectionview 2개 만들어서 if collectionview = backdropcv {} 이렇게 나누기
         backdrops.isEmpty ? 1 : backdrops.count
     }
     

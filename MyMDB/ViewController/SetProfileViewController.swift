@@ -13,10 +13,9 @@ final class SetProfileViewController: BaseViewController {
     private let underlineView = UIView()
     private let statusLabel = UILabel()
     private let registerButton = CustomButton(title: C.completion)
-    private let isEdit = U.shared.get(C.firstKey, false)
     private let mbtiHeader = HeaderLabel()
-
-    private lazy var profileView = ProfileContainerView(name: viewModel.profileImage.value)
+    private let profileView = ProfileContainerView()
+    
     private lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
     private lazy var flowlayout = flowLayout(direction: .vertical, itemCount: 4, inset: 5, ratio: 0.6)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
@@ -32,7 +31,12 @@ final class SetProfileViewController: BaseViewController {
     }
     
     override func configureLayout() {
-        profileView.setProfileConstraint(self)
+        profileView.snp.makeConstraints { make in
+            make.width.equalTo(view.safeAreaLayoutGuide).dividedBy(4)
+            make.height.equalTo(profileView.snp.width)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+        }
         
         nicknameTextField.snp.makeConstraints { make in
             make.top.equalTo(profileView.snp.bottom).offset(20)
@@ -74,7 +78,6 @@ final class SetProfileViewController: BaseViewController {
         profileView.addGestureRecognizer(tapGestureRecognizer)
         
         nicknameTextField.font = .systemFont(ofSize: C.sizeLg)
-        nicknameTextField.text = viewModel.nickname.value
         nicknameTextField.textColor = .customWhite
         nicknameTextField.borderStyle = .none
         nicknameTextField.addTarget(self, action: #selector(verifyNickname), for: .editingChanged)
@@ -94,20 +97,18 @@ final class SetProfileViewController: BaseViewController {
     }
         
     override func rightBarButtonTapped() {
-        viewModel.dateInput.value = ()
+        viewModel.input.date.value = ()
         dismissVC()
-        view.postNotification(C.userInfoChanged , true)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let title = isEdit ? C.editProfileTitle : C.setProfileTitle
+        let title = viewModel.isEdit ? C.editProfileTitle : C.setProfileTitle
         
         configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         configureToolbar(nicknameTextField)
         initCollectionView()
-        verifyNickname(nicknameTextField)
         binding()
 
         if viewModel.isEdit {
@@ -119,27 +120,27 @@ final class SetProfileViewController: BaseViewController {
     }
     
     private func binding() {
-        viewModel.profileImage.lazyBind { [weak self] name in
+        viewModel.output.profileImage.bind { [weak self] name in
             self?.profileView.configureData(name)
         }
         
-        viewModel.nickname.lazyBind { [weak self] nickname in
+        viewModel.output.nickname.bind { [weak self] nickname in
             self?.nicknameTextField.text = nickname
         }
                 
-        viewModel.nicknameValidationMessage.bind { [weak self] result in
+        viewModel.output.nicknameValidationMessage.bind { [weak self] result in
             self?.setStatusMessage(result)
         }
         
-        viewModel.collectionViewReload.bind { [weak self] _ in
+        viewModel.output.collectionViewReload.bind { [weak self] _ in
             self?.collectionView.reloadData()
         }
         
-        viewModel.saveButton.bind { [weak self] status in
+        viewModel.output.saveButton.bind { [weak self] status in
             self?.changeButtonStatus(status)
         }
         
-        viewModel.changeRootView.lazyBind { [weak self] _ in
+        viewModel.output.changeRootView.lazyBind { [weak self] _ in
             self?.changeRootView()
         }
     }
@@ -169,21 +170,21 @@ final class SetProfileViewController: BaseViewController {
     
     @objc
     private func verifyNickname(_ sender: UITextField) {
-        viewModel.nicknameInput.value = sender.text ?? ""
+        viewModel.input.nickname.value = sender.text ?? ""
     }
     
     @objc
     private func registerButtonTapped() {
-        viewModel.dateInput.value = ()
+        viewModel.input.date.value = ()
     }
     
     @objc
     private func imageTapped() {
         let vc = SetProfileImageViewController()
         
-        vc.viewModel.image.value = profileView.getImageName()
+        vc.viewModel.input.imageName.value = profileView.getImageName()
         vc.viewModel.contents = { data in
-            self.viewModel.profileImageInput.value = data
+            self.viewModel.input.profileImage.value = data
         }
         
         navigationController?.pushViewController(vc, animated: true)
@@ -205,6 +206,6 @@ extension SetProfileViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.mbtiInput.value = indexPath.row
+        viewModel.input.selectedMbti.value = indexPath.row
     }
 }

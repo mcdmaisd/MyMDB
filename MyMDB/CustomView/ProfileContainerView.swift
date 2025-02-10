@@ -14,7 +14,7 @@ final class ProfileContainerView: BaseView {
     
     private var profileImageName: String?
     
-    init(name: String) {
+    init(name: String = "") {
         profileImageName = name
         profileImageView.configureImage(name)
         super.init(frame: .zero)

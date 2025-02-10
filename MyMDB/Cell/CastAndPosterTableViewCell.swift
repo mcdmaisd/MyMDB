@@ -64,10 +64,10 @@ extension CastAndPosterTableViewCell: UICollectionViewDelegate, UICollectionView
         
         switch cellType {
         case .cast:
-            let data = item as! CastInfo
+            let data = item as! TMDBCastInfo
             (cell as! CastCollectionViewCell).configureData(data)
         case .poster:
-            let data = item as! ImageInfo
+            let data = item as! TMDBImageInfo
             (cell as! PosterCollectionViewCell).configureData(data.file_path)
         }
         
@@ -78,7 +78,7 @@ extension CastAndPosterTableViewCell: UICollectionViewDelegate, UICollectionView
 extension CastAndPosterTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let row = indexPath.row
-        let poster = results[row] as? ImageInfo
+        let poster = results[row] as? TMDBImageInfo
         let tag = collectionView.tag
         let cellType = CellType(rawValue: tag) ?? .cast
 
