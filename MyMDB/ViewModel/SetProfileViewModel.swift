@@ -19,25 +19,20 @@ class SetProfileViewModel: BaseViewModel, SendNotification {
     }
     
     struct Output {
+        let isEdit = Observable(U.shared.get(C.firstKey, false))
         let profileImage = Observable("")
         let nickname = Observable("")
         let nicknameValidationMessage = Observable("")
         let collectionViewReload = Observable(())
         let changeRootView = Observable(())
         let saveButton: Observable<Bool> = .init(false)
+        let nicknameValidation: Observable<Bool> = .init(false)
+        let mbti = Observable(U.shared.get(C.mbtiKey, C.defaultKey))
     }
-        
-    let isEdit = U.shared.get(C.firstKey, false)
-    
-    private(set) var mbti = U.shared.get(C.mbtiKey, C.defaultKey)
-    private(set) var result = false
-
+            
     private var hasInvalidLength = false
     private var hasInvalidCharacter = false
-    private var hasInvalidMBTI = false
     private var hasNumber = false
-    private var isValidNickname = false
-    private lazy var isValidMbti = mbti.filter { $0 == true }.count == 4
     
     init() {
         input = Input()
@@ -74,9 +69,13 @@ class SetProfileViewModel: BaseViewModel, SendNotification {
     private func toggleKey(_ index: Int) {
         guard let index = input.selectedMbti.value else { return }
         let pairIndex = index < 4 ? index + 4 : index - 4
+        
+        var mbti = output.mbti.value
         mbti[index].toggle()
         mbti[pairIndex] = false
-        checkMbti()
+        
+        output.mbti.value = mbti
+        configureSaveButtonStatus()
         output.collectionViewReload.value = ()
     }
     
@@ -88,7 +87,7 @@ class SetProfileViewModel: BaseViewModel, SendNotification {
         hasInvalidLength = text.count < 2 || text.count >= 10
         hasInvalidCharacter = !text.filter(C.invalidCharacterSet.contains).isEmpty
         hasNumber = !text.filter { $0.isNumber }.isEmpty
-        result = !hasInvalidLength && !hasInvalidCharacter && !hasNumber
+        output.nicknameValidation.value = !hasInvalidLength && !hasInvalidCharacter && !hasNumber
         
         if text.isEmpty {
             errorMessage.append("")
@@ -98,28 +97,23 @@ class SetProfileViewModel: BaseViewModel, SendNotification {
             errorMessage = [
                 hasInvalidCharacter ? C.invalidCharacter : nil,
                 hasNumber ? C.invalidNumber: nil,
-                result ? C.validNickname: nil
+                output.nicknameValidation.value ? C.validNickname: nil
             ]
         }
         output.nicknameValidationMessage.value = errorMessage.compactMap { $0 }.joined(separator: C.newline)
-        isValidNickname = result
-        configureSaveButtonStatus()
-    }
-    
-    private func checkMbti() {
-        isValidMbti = mbti.filter { $0 == true }.count == 4
         configureSaveButtonStatus()
     }
     
     private func configureSaveButtonStatus() {
-        output.saveButton.value = isValidNickname && isValidMbti
+        let isValidMbti = output.mbti.value.filter { $0 == true }.count == 4
+        output.saveButton.value = output.nicknameValidation.value && isValidMbti
     }
     
     private func save() {
         U.shared.set(output.profileImage.value, C.profileImageKey)
         U.shared.set(output.nickname.value, C.nickNameKey)
-        U.shared.set(mbti, C.mbtiKey)
-        if !isEdit {
+        U.shared.set(output.mbti.value, C.mbtiKey)
+        if !output.isEdit.value {
             U.shared.set(Date().dateToString(), C.dateKey)
             output.changeRootView.value = ()
         }

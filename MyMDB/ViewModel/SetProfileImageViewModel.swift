@@ -10,6 +10,7 @@ import Foundation
 class SetProfileImageViewModel: BaseViewModel {
     var input: Input
     var output: Output
+    var profileImage: ((String) -> Void)?
     
     struct Input {
         let imageName = Observable("")
@@ -19,13 +20,9 @@ class SetProfileImageViewModel: BaseViewModel {
     struct Output {
         let selectedImage = Observable("")
         let collectionViewReload: Observable<Void> = .init(())
+        let isEdit = Observable(U.shared.get(C.firstKey, false))
+        let selectedIndex = Observable(0)
     }
-    
-    let isEdit = U.shared.get(C.firstKey, false)
-
-    var contents: ((String) -> Void)?
-    
-    private(set) var selectedIndex = 0
 
     init() {
         input = Input()
@@ -35,7 +32,7 @@ class SetProfileImageViewModel: BaseViewModel {
     }
     
     func transform() {
-        input.imageName.bind { [weak self] name in
+        input.imageName.lazyBind { [weak self] name in
             self?.input.imageIndex.value = Int(name.filter { $0.isNumber }) ?? 0
         }
         
@@ -45,14 +42,14 @@ class SetProfileImageViewModel: BaseViewModel {
     }
     
     private func changeImage(_ index: Int) {
-        if selectedIndex == index { return }
-        selectedIndex = index
+        output.selectedIndex.value = index
         output.selectedImage.value = makeImageName()
-        contents?(makeImageName())
         output.collectionViewReload.value = ()
+        
+        profileImage?(makeImageName())
     }
     
     private func makeImageName() -> String {
-        "\(C.profileImagePrefix)\(selectedIndex)"
+        "\(C.profileImagePrefix)\(input.imageIndex.value)"
     }
 }

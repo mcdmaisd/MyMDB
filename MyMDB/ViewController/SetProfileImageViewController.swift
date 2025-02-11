@@ -35,14 +35,18 @@ final class SetProfileImageViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let title = viewModel.isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
-        configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         initCollectionView()
         binding()
     }
     
     private func binding() {
+        viewModel.output.isEdit.bind { [weak self] isEdit in
+            guard let self else { return }
+            let title = isEdit ? C.editProfileImgaeTitle : C.setProfileImageTitle
+            configureNavigationTitle(self, title)
+        }
+        
         viewModel.output.selectedImage.bind { [weak self] name in
             self?.profileView.configureData(name)
         }
@@ -54,7 +58,6 @@ final class SetProfileImageViewController: BaseViewController {
     
     private func initCollectionView() {
         collectionView.backgroundColor = .clear
-        collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(ProfileImageCollectionViewCell.self, forCellWithReuseIdentifier: ProfileImageCollectionViewCell.id)
@@ -75,14 +78,15 @@ extension SetProfileImageViewController: UICollectionViewDelegate, UICollectionV
         let tag = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProfileImageCollectionViewCell.id, for: indexPath) as! ProfileImageCollectionViewCell
         
-        cell.configureData(tag, viewModel.selectedIndex)
+        viewModel.output.selectedIndex.bind { index in
+            cell.configureData(tag, index)
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let row = indexPath.row
-        viewModel.input.imageIndex.value = row
+        viewModel.input.imageIndex.value = indexPath.row
     }
 }

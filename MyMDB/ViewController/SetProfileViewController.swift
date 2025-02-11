@@ -103,23 +103,28 @@ final class SetProfileViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let title = viewModel.isEdit ? C.editProfileTitle : C.setProfileTitle
-        
-        configureNavigationTitle(self, title)
         configureLeftBarButtonItem(self)
         configureToolbar(nicknameTextField)
         initCollectionView()
         binding()
-
-        if viewModel.isEdit {
-            configureRightBarButtonItem(self, C.save)
-            registerButton.isHidden = true
-            navigationItem.leftBarButtonItem?.action = #selector(dismissVC)
-            navigationItem.leftBarButtonItem?.image = UIImage(systemName: C.xmark)
-        }
     }
     
     private func binding() {
+        viewModel.output.isEdit.bind { [weak self] isEdit in
+            guard let self else { return }
+            
+            let title = isEdit ? C.editProfileTitle : C.setProfileTitle
+            configureNavigationTitle(self, title)
+            
+            if isEdit {
+                configureRightBarButtonItem(self, C.save)
+                registerButton.isHidden = true
+                
+                navigationItem.leftBarButtonItem?.action = #selector(dismissVC)
+                navigationItem.leftBarButtonItem?.image = UIImage(systemName: C.xmark)
+            }
+        }
+        
         viewModel.output.profileImage.bind { [weak self] name in
             self?.profileView.configureData(name)
         }
@@ -148,11 +153,15 @@ final class SetProfileViewController: BaseViewController {
     private func changeButtonStatus(_ result: Bool) {
         let color: UIColor = result ? .validButton : .invalidButton
         
-        if viewModel.isEdit {
-            navigationItem.rightBarButtonItem?.isEnabled = result
-        } else {
-            registerButton.configuration?.baseBackgroundColor = color
-            registerButton.isUserInteractionEnabled = result
+        viewModel.output.isEdit.bind { [weak self] isEdit in
+            guard let self else { return }
+            
+            if isEdit {
+                navigationItem.rightBarButtonItem?.isEnabled = result
+            } else {
+                registerButton.configuration?.baseBackgroundColor = color
+                registerButton.isUserInteractionEnabled = result
+            }
         }
     }
     
@@ -164,8 +173,10 @@ final class SetProfileViewController: BaseViewController {
     }
     
     private func setStatusMessage(_ message: String) {
-        statusLabel.textColor = viewModel.result ? .validNickname : .invalidNickname
-        statusLabel.text = message
+        viewModel.output.nicknameValidation.bind { [weak self] result in
+            self?.statusLabel.textColor = result ? .validNickname : .invalidNickname
+            self?.statusLabel.text = message
+        }
     }
     
     @objc
@@ -181,12 +192,12 @@ final class SetProfileViewController: BaseViewController {
     @objc
     private func imageTapped() {
         let vc = SetProfileImageViewController()
-        
+
         vc.viewModel.input.imageName.value = profileView.getImageName()
-        vc.viewModel.contents = { data in
-            self.viewModel.input.profileImage.value = data
+        vc.viewModel.profileImage = { [weak self] name in
+            self?.viewModel.input.profileImage.value = name
         }
-        
+
         navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -200,7 +211,9 @@ extension SetProfileViewController: UICollectionViewDelegate, UICollectionViewDa
         let row = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MbtiCollectionViewCell.id, for: indexPath) as! MbtiCollectionViewCell
         
-        cell.configureLabel(C.MBTIKey[row], viewModel.mbti[row])
+        viewModel.output.mbti.bind { mbti in
+            cell.configureLabel(C.MBTIKey[row], mbti[row])
+        }
         
         return cell
     }
