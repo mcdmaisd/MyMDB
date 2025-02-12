@@ -116,7 +116,9 @@ final class MainViewController: BaseViewController {
         
         viewModel.output.index.lazyBind { [weak self] index in
             guard let index else { return }
-            self?.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+            UIView.performWithoutAnimation {
+                self?.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+            }
         }
     }
     

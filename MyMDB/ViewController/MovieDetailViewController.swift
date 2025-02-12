@@ -16,26 +16,12 @@ final class MovieDetailViewController: BaseViewController {
     private let moreButton = LabelButton(title: C.more)
     private let synopsisLabel = OverViewLabel()
     private let tableView = UITableView()
-    
+
     private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 0)
     private lazy var backdropCollectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
-    
-    private var ratio: Double = 0 {
-        didSet {
-            remakeCVLayout(ratio)
-        }
-    }
-    
-    private var backdrops: [TMDBImageInfo] = [] {
-        didSet {
-            backdropCollectionView.reloadData()
-        }
-    }
-    
-    private var data: [[Any]] = [[], []]
-    
-    var result: TMDBMovieInfo?
-    
+
+    var viewModel = MovieDetailViewModel()
+
     override func configureHierarchy() {
         addSubView(scrollView)
         scrollView.addSubview(backdropCollectionView)
@@ -92,18 +78,8 @@ final class MovieDetailViewController: BaseViewController {
     
     @objc
     private func moreButtonTapped(_ sender: UIButton) {
-        var title = sender.titleLabel?.text ?? ""
-        var line = 0
-        
-        if title == C.more {
-            title = C.hide
-        } else {
-            title = C.more
-            line = 3
-        }
-        
-        sender.setTitle(title, for: .normal)
-        synopsisLabel.configureData(result?.overview ?? "", line)
+        let title = sender.titleLabel?.text ?? ""
+        viewModel.input.moreButton.value = title
     }
     
     override func configureView() {
@@ -122,31 +98,54 @@ final class MovieDetailViewController: BaseViewController {
         synopsis.configureData(C.synopsis)
         
         synopsisLabel.lineBreakMode = .byTruncatingTail
-        synopsisLabel.configureData(result?.overview ?? "", 3)
         
         moreButton.addTarget(self, action: #selector(moreButtonTapped), for: .touchUpInside)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let result else { return }
-        configureNavigationBar(result)
         initCollectionView()
         initTableView()
-        configureStackView()
-        makeImages(result)
+        binding()
+    }
+    
+    private func binding() {
+        viewModel.output.buttonTitle.lazyBind { [weak self] title in
+            self?.moreButton.setTitle(title, for: .normal)
+        }
+        
+        viewModel.output.numberOfLines.lazyBind { [weak self] lines in
+            self?.synopsisLabel.numberOfLines = lines
+        }
+        
+        viewModel.output.heightDivider.lazyBind { [weak self] divider in
+            self?.remakeCVLayout(divider)
+        }
+        
+        viewModel.output.backdrops.lazyBind { [weak self] _ in
+            self?.backdropCollectionView.reloadData()
+        }
+        
+        viewModel.output.movieInfo.bind { [weak self] info in
+            guard let info else { return }
+            self?.configureNavigationBar(info)
+            self?.synopsisLabel.configureData(info.overview, 3)
+        }
+        
+        viewModel.output.convertedInfo.lazyBind { [weak self] info in
+            self?.configureStackView(info)
+        }
+        
+        viewModel.output.pages.lazyBind { [weak self] pages in
+            self?.pageControl.numberOfPages = pages
+        }
+        
+        viewModel.output.layoutUpdate.lazyBind { [weak self] _ in
+            self?.layoutUpdate()
+        }
     }
         
-    private func configureStackView() {
-        guard let result else { return }
-        
-        let genres = result.genre_ids?.map { AC.genreDictionary[$0] }.prefix(2).compactMap { $0 }.joined(separator: AC.comma) ?? ""
-        let movieInfo = [
-            result.release_date ?? "",
-            String(format: "%.1f", result.vote_average ?? 0.0),
-            genres
-        ]
-        
+    private func configureStackView(_ movieInfo: [String]) {
         for (i, image) in C.infoStackImages.enumerated() {
             let info = MovieInfoButton(title: movieInfo[i], image: image)
             infoStackView.addArrangedSubview(info)
@@ -179,40 +178,14 @@ final class MovieDetailViewController: BaseViewController {
         }
     }
     
-    private func makeImages(_ result: TMDBMovieInfo) {
-        let imageRequest = APIRouter.image(id: result.id)
-        let creditRequest = APIRouter.credit(id: result.id)
-        let group = DispatchGroup()
-        
-        group.enter()
-        APIManager.shared.requestAPI(imageRequest, self) { (data: TMDBImageResponse) in
-            DispatchQueue.main.async {
-                let result = Array(data.backdrops.prefix(5))
-                self.data[1] = data.posters
-                self.backdrops = result
-                self.ratio = result.first?.aspect_ratio ?? 1
-                self.pageControl.numberOfPages = result.count
-                group.leave()
-            }
+    private func layoutUpdate() {
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+        tableView.isHidden = false
+        tableView.snp.updateConstraints {
+            $0.height.equalTo(tableView.contentSize.height)
         }
-        
-        group.enter()
-        APIManager.shared.requestAPI(creditRequest, self) { (data: TMDBCreditResponse) in
-            DispatchQueue.main.async {
-                self.data[0] = data.cast
-                group.leave()
-            }
-        }
-        
-        group.notify(queue: .main) {
-            self.tableView.reloadData()
-            self.tableView.layoutIfNeeded()
-            self.tableView.isHidden = false
-            self.tableView.snp.updateConstraints {
-                $0.height.equalTo(self.tableView.contentSize.height)
-            }
-            self.scrollView.layoutIfNeeded()
-        }
+        scrollView.layoutIfNeeded()
     }
     
     private func configureNavigationBar(_ result: TMDBMovieInfo) {
@@ -226,7 +199,7 @@ final class MovieDetailViewController: BaseViewController {
     
     private func configureHeaderView(_ section: Int) -> UIView {
         let header = HeaderLabel()
-        let empty = data[section].isEmpty
+        let empty = viewModel.castAndPoster[section].isEmpty
         
         if empty {
             header.configureData(C.emptyHeaderMessage[section])
@@ -240,14 +213,16 @@ final class MovieDetailViewController: BaseViewController {
 
 extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        backdrops.isEmpty ? 1 : backdrops.count
+        viewModel.output.backdrops.value.isEmpty ? 1 : viewModel.output.backdrops.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let row = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BackdropCollectionViewCell.id, for: indexPath) as! BackdropCollectionViewCell
         
-        backdrops.isEmpty ? cell.configureData() : cell.configureData(backdrops[row])
+        viewModel.output.backdrops.value.isEmpty
+            ? cell.configureData()
+            : cell.configureData(viewModel.output.backdrops.value[row])
         
         return cell
     }
@@ -260,11 +235,11 @@ extension MovieDetailViewController: UICollectionViewDelegate, UICollectionViewD
 
 extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        data.count
+        viewModel.castAndPoster.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        data[section].count == 0 ? 0 : 1
+        viewModel.castAndPoster[section].count == 0 ? 0 : 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -277,7 +252,7 @@ extension MovieDetailViewController: UITableViewDelegate, UITableViewDataSource 
         
         cell.backgroundColor = .clear
         cell.collectionView.tag = section
-        cell.configureData(data[section])
+        cell.configureData(viewModel.castAndPoster[section])
         return cell
     }
     

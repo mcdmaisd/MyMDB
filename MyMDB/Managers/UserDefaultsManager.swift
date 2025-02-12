@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class UserDefaultsManager {//encode, decode
+final class UserDefaultsManager {//encode, decode 및 수업시간에 배운 propertywrapper, nested enum으로 key 관리
     static let shared = UserDefaultsManager()
     
     private let defaults = UserDefaults.standard
@@ -21,5 +21,4 @@ final class UserDefaultsManager {//encode, decode
     func get<T>(_ key: String, _ defaultValue: T) -> T {
         defaults.object(forKey: key) as? T ?? defaultValue
     }
-    
 }

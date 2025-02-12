@@ -145,7 +145,7 @@ extension UIViewController: SendTouchEvent {
     
     func moveToDetailVC(_ from: UIViewController, _ data: TMDBMovieInfo) {
         let vc = MovieDetailViewController()
-        vc.result = data
+        vc.viewModel.input.movieInfo.value = data
         from.navigationController?.pushViewController(vc, animated: true)
     }
     
