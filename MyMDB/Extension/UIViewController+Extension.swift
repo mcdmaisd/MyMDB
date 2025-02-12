@@ -46,7 +46,7 @@ extension UIViewController: SendTouchEvent {
         cell.invalidateLayout()
     }
     
-    func presentAlert(_ title: String? = nil, _ message: String, _ delete: Bool = false) {
+    func presentAlert(_ title: String?, _ message: String, _ delete: Bool = false) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         if delete {

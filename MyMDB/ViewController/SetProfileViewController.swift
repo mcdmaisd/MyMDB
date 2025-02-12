@@ -197,7 +197,7 @@ final class SetProfileViewController: BaseViewController {
         vc.viewModel.profileImage = { [weak self] name in
             self?.viewModel.input.profileImage.value = name
         }
-
+        
         navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -8,6 +8,7 @@
 import UIKit
 
 final class MainViewController: BaseViewController {
+    private let viewModel = MainViewModel()
     private let infoView = UserInfoView()
     private let recentSearches = HeaderLabel()
     private let removeAllButton = LabelButton(title: C.removeAll)
@@ -18,21 +19,6 @@ final class MainViewController: BaseViewController {
     
     private lazy var flowlayout = flowLayout(direction: .horizontal, itemCount: 1, inset: 10)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowlayout)
-    
-    private var keywords = U.shared.get(C.searchHistoryKey, [String]()) {
-        didSet {
-            hideView(keywords.isEmpty)
-            U.shared.set(keywords, C.searchHistoryKey)
-            removeSubviews()
-            if !keywords.isEmpty { configureStackView() }
-        }
-    }
-    
-    private var movies: [TMDBMovieInfo] = [] {
-        didSet {
-            collectionView.reloadData()
-        }
-    }
     
     override func configureHierarchy() {
         addSubView(infoView)
@@ -94,9 +80,7 @@ final class MainViewController: BaseViewController {
         infoView.delegate = self
         
         recentSearches.configureData(C.recentSearches)
-        
-        hideView(keywords.isEmpty)
-        
+                
         removeAllButton.addTarget(self, action: #selector(removeAllButtonTapped), for: .touchUpInside)
         
         emptyHistory.configureLabel(C.emptyHistory)
@@ -114,12 +98,26 @@ final class MainViewController: BaseViewController {
         super.viewDidLoad()
         configureNavigationTitle(self, C.main)
         configureRightBarButtonItem(self, nil, C.searchImage)
-        configureStackView()
         initCollectionView()
-        configureCollectionView()
-        NotificationCenter
-            .default
-            .addObserver(self, selector:#selector(reloadButton), name: .name, object: nil)
+        binding()
+    }
+    
+    private func binding() {
+        viewModel.output.searchHistory.bind { [weak self] history in
+            guard let self else { return }
+            removeSubviews()
+            hideView(history.isEmpty)
+            configureStackView(history)
+        }
+        
+        viewModel.output.movies.bind { [weak self] movies in
+            self?.collectionView.reloadData()
+        }
+        
+        viewModel.output.index.lazyBind { [weak self] index in
+            guard let index else { return }
+            self?.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -133,15 +131,19 @@ final class MainViewController: BaseViewController {
         emptyHistory.isHidden = !empty
     }
     
-    private func configureStackView() {
+    private func configureStackView(_ keywords: [String]) {
+        if keywords.isEmpty { return }
+        
         for (i, keyword) in keywords.enumerated() {
             stackView.addArrangedSubview(configureButton(i, keyword))
         }
+        
+        scrollView.setContentOffset(.zero, animated: true)
     }
     
     private func configureButton(_ tag: Int, _ keyword: String) -> KeywordButton {
         let button = KeywordButton(keyword, tag)
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(keywordButtonTapped), for: .touchUpInside)
         
         if let image = button.imageView {
             image.isUserInteractionEnabled = true
@@ -152,9 +154,7 @@ final class MainViewController: BaseViewController {
     }
     
     private func configureTapGestureRecognizer() -> UITapGestureRecognizer {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(removeKeyword))
-        
-        return tapGesture
+        return UITapGestureRecognizer(target: self, action: #selector(removeKeyword))
     }
     
     private func removeSubviews() {
@@ -163,12 +163,6 @@ final class MainViewController: BaseViewController {
         subviews.forEach {
             stackView.removeArrangedSubview($0)
             $0.removeFromSuperview()
-        }
-    }
-    
-    private func configureCollectionView() {
-        APIManager.shared.requestAPI(APIRouter.trending, self) { (data: TMDBSearchAndTrendingResponse) in
-            self.movies = data.results
         }
     }
     
@@ -182,63 +176,29 @@ final class MainViewController: BaseViewController {
     
     @objc
     private func removeAllButtonTapped() {
-        keywords.removeAll()
+        viewModel.input.removeAllButton.value = ()
     }
     
     @objc
     private func removeKeyword(_ sender: UITapGestureRecognizer) {
         guard let tag = sender.view?.superview?.tag else { return }
-        keywords.remove(at: tag)
+        viewModel.input.removeButton.value = tag
     }
     
     @objc
-    private func buttonTapped(_ sender: UIButton) {
+    private func keywordButtonTapped(_ sender: UIButton) {
         let tag = sender.tag
-        let word = keywords[tag]
-    
-        moveToSearch(word)
-        if tag == 0 { return }
-        insertWord(word)
+        
+        viewModel.input.keywordIndex.value = tag
+        moveToSearch(sender.titleLabel?.text)
     }
-    
-    @objc
-    private func reloadButton(_ notification: Notification) {
-        if let data = notification.object as? Int {
-            for (i, movie) in movies.enumerated() {
-                if movie.id == data {
-                    UIView.performWithoutAnimation {
-                        collectionView.reloadItems(at: [IndexPath(item: i, section: 0)])
-                    }
-                    break
-                }
-            }
-        }
-    }
-    
-    private func insertWord(_ word: String) {
-        if let index = keywords.firstIndex(of: word) {
-            keywords.remove(at: index)
-        }
-        keywords.insert(word, at: 0)
-        scrollView.setContentOffset(.zero, animated: true)
-    }
-    
+        
     private func moveToSearch(_ title: String? = nil) {
         let vc = SearchViewController()
 
-        vc.movieTitle = title
-        vc.keyword = { [self] data in
-            let result = keywords.filter { $0.localizedCaseInsensitiveCompare(data) == .orderedSame }
-            result.isEmpty ? insertWord(data) : insertWord(result.first!)
-        }
-                
-        if let title {
-            let request = APIRouter.search(keyword: title, page: AC.firstPage)
-            
-            APIManager.shared.requestAPI(request, self) { (data: TMDBSearchAndTrendingResponse) in
-                vc.totalPage = data.total_pages
-                vc.searchResults = data.results
-            }
+        vc.viewModel.input.title.value = title
+        vc.viewModel.keyword = { [weak self] data in
+            self?.viewModel.input.keyword.value = data
         }
         
         navigationController?.pushViewController(vc, animated: true)
@@ -251,19 +211,24 @@ final class MainViewController: BaseViewController {
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        movies.count
+        viewModel.output.movieCount.value
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let row = indexPath.row
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TodayMovieCollectionViewCell.id, for: indexPath) as! TodayMovieCollectionViewCell
         
-        cell.configureData(movies[row])
+        viewModel.output.movies.bind { movies in
+            cell.configureData(movies[row])
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        moveToDetailVC(self, movies[indexPath.row])
+        viewModel.output.movies.bind { [weak self] movies in
+            guard let self else { return }
+            moveToDetailVC(self, movies[indexPath.row])
+        }
     }
 }
